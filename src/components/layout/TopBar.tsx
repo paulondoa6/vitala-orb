@@ -14,16 +14,6 @@ export const TopBar = () => {
     >
       <div className="glass">
         <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
-          <div className="w-9" aria-hidden />
-          <Link to="/" aria-label="Vitalio home" className="flex items-baseline gap-0.5">
-            <span className="font-semibold text-xl tracking-tight text-foreground lowercase">
-              vital
-            </span>
-            <span className="font-semibold text-xl tracking-tight bg-gradient-primary bg-clip-text text-transparent lowercase">
-              io
-            </span>
-            <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-gradient-primary shadow-glow" />
-          </Link>
           <Link
             to="/"
             aria-label="Accueil"
