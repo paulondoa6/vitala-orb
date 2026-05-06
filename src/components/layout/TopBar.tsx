@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Home } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import avatarImg from "@/assets/avatar.jpg";
 
 export const TopBar = () => {
   return (
@@ -12,7 +14,13 @@ export const TopBar = () => {
     >
       <div className="glass">
         <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
-          <div className="w-9" aria-hidden />
+          <Link
+            to="/"
+            aria-label="Accueil"
+            className="flex h-9 w-9 items-center justify-center rounded-full glass shadow-float text-foreground transition-colors hover:text-primary"
+          >
+            <Home className="h-4.5 w-4.5" strokeWidth={2.2} />
+          </Link>
           <Link to="/" aria-label="Vitalio home" className="flex items-baseline gap-0.5">
             <span className="font-semibold text-xl tracking-tight text-foreground lowercase">
               vital
@@ -29,7 +37,7 @@ export const TopBar = () => {
               className="rounded-full ring-1 ring-border/60"
             >
               <Avatar className="h-9 w-9">
-                <AvatarImage src="" alt="" />
+                <AvatarImage src={avatarImg} alt="Profile avatar" />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
                   V
                 </AvatarFallback>
