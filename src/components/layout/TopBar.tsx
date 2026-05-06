@@ -24,6 +24,22 @@ export const TopBar = () => {
             </span>
             <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-gradient-primary shadow-glow" />
           </Link>
+          <Link
+            to="/"
+            aria-label="Accueil"
+            className="flex h-9 w-9 items-center justify-center rounded-full glass shadow-float text-foreground transition-colors hover:text-primary"
+          >
+            <Home className="h-4.5 w-4.5" strokeWidth={2.2} />
+          </Link>
+          <Link to="/" aria-label="Vitalio home" className="flex items-baseline gap-0.5">
+            <span className="font-semibold text-xl tracking-tight text-foreground lowercase">
+              vital
+            </span>
+            <span className="font-semibold text-xl tracking-tight bg-gradient-primary bg-clip-text text-transparent lowercase">
+              io
+            </span>
+            <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-gradient-primary shadow-glow" />
+          </Link>
           <Link to="/profile" aria-label="Profile">
             <motion.div
               whileHover={{ scale: 1.06 }}
@@ -31,7 +47,7 @@ export const TopBar = () => {
               className="rounded-full ring-1 ring-border/60"
             >
               <Avatar className="h-9 w-9">
-                <AvatarImage src="" alt="" />
+                <AvatarImage src={avatarImg} alt="Profile avatar" />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
                   V
                 </AvatarFallback>
