@@ -1,16 +1,15 @@
 import { useLocation } from "react-router-dom";
-import { Activity, Map, User, Zap } from "lucide-react";
+import { Activity, Home, Map } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavItem } from "./NavItem";
 import { ScanButton } from "./ScanButton";
 
 const items = [
-  { to: "/", icon: Zap, label: "Flash" },
+  { to: "/", icon: Home, label: "Accueil" },
   { to: "/map", icon: Map, label: "Map" },
 ];
 const itemsRight = [
   { to: "/activity", icon: Activity, label: "Activity" },
-  { to: "/profile", icon: User, label: "Profile" },
 ];
 
 export const BottomNav = () => {
