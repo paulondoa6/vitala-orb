@@ -16,7 +16,9 @@ export const NavItem = ({ to, icon: Icon, label, active }: NavItemProps) => {
       to={to}
       aria-label={label}
       aria-current={active ? "page" : undefined}
-      className="relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-w-0"
+      role="tab"
+      aria-selected={active}
+      className="relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-w-0 rounded-2xl outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       {active && (
         <motion.span
