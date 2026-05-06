@@ -9,7 +9,13 @@ interface ScanButtonProps {
 export const ScanButton = ({ active }: ScanButtonProps) => {
   return (
     <div className="relative -mt-8 flex flex-1 items-start justify-center">
-      <Link to="/scan" aria-label="Scan" className="relative block">
+      <Link
+        to="/scan"
+        aria-label="Lancer un scan"
+        role="tab"
+        aria-selected={active}
+        className="relative block rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
         {/* Pulse halo */}
         <motion.span
           className="absolute inset-0 rounded-full bg-gradient-primary"

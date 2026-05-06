@@ -22,9 +22,11 @@ export const BottomNav = () => {
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 28, delay: 0.1 }}
+      aria-label="Navigation principale"
+      role="navigation"
       className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
     >
-      <div className="glass shadow-float relative flex w-full max-w-md items-stretch gap-0.5 rounded-[2rem] px-2 py-1.5">
+      <div role="tablist" aria-orientation="horizontal" className="glass shadow-float relative flex w-full max-w-md items-stretch gap-0.5 rounded-[2rem] px-2 py-1.5">
         {items.map((it) => (
           <NavItem key={it.to} {...it} active={isActive(it.to)} />
         ))}
