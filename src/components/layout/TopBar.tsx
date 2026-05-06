@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Home } from "lucide-react";
+import { Home, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import avatarImg from "@/assets/avatar.jpg";
 
@@ -34,12 +34,12 @@ export const TopBar = () => {
             <motion.div
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
-              className="rounded-full ring-1 ring-border/60"
+              className="rounded-full ring-1 ring-border/60 overflow-hidden bg-gradient-primary/10"
             >
               <Avatar className="h-9 w-9">
                 <AvatarImage src={avatarImg} alt="Profile avatar" />
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                  V
+                <AvatarFallback className="bg-gradient-to-br from-primary/80 to-primary-glow text-primary-foreground">
+                  <User className="h-4 w-4" strokeWidth={2.4} />
                 </AvatarFallback>
               </Avatar>
             </motion.div>
