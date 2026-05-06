@@ -15,18 +15,20 @@ export const NavItem = ({ to, icon: Icon, label, active }: NavItemProps) => {
     <Link
       to={to}
       aria-label={label}
-      className="relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2"
+      aria-current={active ? "page" : undefined}
+      className="relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 min-w-0"
     >
       {active && (
         <motion.span
-          layoutId="nav-indicator"
-          className="absolute -top-0.5 h-1 w-1 rounded-full bg-primary shadow-glow"
+          layoutId="nav-pill"
+          className="absolute inset-x-2 inset-y-1 rounded-2xl bg-primary/10"
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
         />
       )}
       <motion.div
         animate={{ scale: active ? 1.12 : 1, y: active ? -1 : 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        className="relative flex h-5 w-5 items-center justify-center"
       >
         <Icon
           className={cn(
@@ -38,7 +40,7 @@ export const NavItem = ({ to, icon: Icon, label, active }: NavItemProps) => {
       </motion.div>
       <span
         className={cn(
-          "text-[10px] font-medium tracking-wide transition-colors",
+          "relative text-[10px] font-medium tracking-wide truncate transition-colors",
           active ? "text-foreground" : "text-muted-foreground"
         )}
       >
