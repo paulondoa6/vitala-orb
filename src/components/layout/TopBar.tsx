@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const TopBar = () => {
@@ -12,22 +13,29 @@ export const TopBar = () => {
       <div className="glass">
         <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
           <div className="w-9" aria-hidden />
-          <h1 className="text-lg font-semibold tracking-[0.2em] text-foreground">
-            VITALA
-          </h1>
-          <motion.button
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.94 }}
-            className="rounded-full ring-1 ring-border/60"
-            aria-label="Profile"
-          >
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="" alt="" />
-              <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
-                V
-              </AvatarFallback>
-            </Avatar>
-          </motion.button>
+          <Link to="/" aria-label="Vitalio home" className="flex items-baseline gap-0.5">
+            <span className="font-semibold text-xl tracking-tight text-foreground lowercase">
+              vital
+            </span>
+            <span className="font-semibold text-xl tracking-tight bg-gradient-primary bg-clip-text text-transparent lowercase">
+              io
+            </span>
+            <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-gradient-primary shadow-glow" />
+          </Link>
+          <Link to="/profile" aria-label="Profile">
+            <motion.div
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              className="rounded-full ring-1 ring-border/60"
+            >
+              <Avatar className="h-9 w-9">
+                <AvatarImage src="" alt="" />
+                <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs font-semibold">
+                  V
+                </AvatarFallback>
+              </Avatar>
+            </motion.div>
+          </Link>
         </div>
       </div>
     </motion.header>
