@@ -8,6 +8,7 @@ import MapPage from "./pages/MapPage";
 import Scan from "./pages/Scan";
 import ActivityPage from "./pages/ActivityPage";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/scan" element={<Scan />} />
           <Route path="/activity" element={<ActivityPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
