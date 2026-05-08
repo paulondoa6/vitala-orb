@@ -355,8 +355,11 @@ const Profile = () => {
       </div>
     </section>
 
+    <NotificationPreferences />
+
     <p className="mt-6 text-center text-[11px] text-muted-foreground">vitalio · v1.0.0</p>
   </AppShell>
-);
+  );
+};
 
 export default Profile;
