@@ -339,8 +339,83 @@ const Scan = () => {
           </motion.div>
         )}
 
+        {/* ============ FILTERS ============ */}
+        {(phase === "scanning" || phase === "result") && results.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-5 px-5"
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                Filtres
+              </p>
+              {activeFilters.size > 0 && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="text-[11px] font-semibold uppercase tracking-widest text-primary"
+                >
+                  Réinitialiser · {visibleCount}
+                </button>
+              )}
+            </div>
+            <div className="-mx-5 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex gap-2 pb-1">
+                {(["best", "urgent", "flash", "reco", "need", "near"] as ResultKind[]).map((kind) => {
+                  const meta = KIND_META[kind];
+                  const Icon = meta.icon;
+                  const isActive = activeFilters.has(kind);
+                  const count = results.filter((r) => r.kind === kind).length;
+                  return (
+                    <motion.button
+                      key={kind}
+                      type="button"
+                      onClick={() => toggleFilter(kind)}
+                      whileTap={{ scale: 0.94 }}
+                      aria-pressed={isActive}
+                      disabled={count === 0}
+                      className={cn(
+                        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                        isActive
+                          ? "border-transparent bg-foreground text-background shadow-glow"
+                          : "border-border bg-background/40 text-foreground hover:bg-muted/60",
+                        count === 0 && "opacity-40"
+                      )}
+                    >
+                      <Icon className={cn("h-3.5 w-3.5", !isActive && meta.tint)} />
+                      <span>{meta.label}</span>
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                          isActive ? "bg-background/20" : "bg-muted text-muted-foreground"
+                        )}
+                      >
+                        {count}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* ============ RESULTS LIST ============ */}
-        <div className="mt-6 space-y-6 px-5">
+        <div className="mt-4 space-y-6 px-5">
+          {phase === "result" && grouped.length === 0 && results.length > 0 && (
+            <div className="glass rounded-2xl p-6 text-center shadow-float">
+              <p className="text-sm font-semibold">Aucun résultat dans ces filtres</p>
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-2 text-xs font-semibold uppercase tracking-widest text-primary"
+              >
+                Réinitialiser les filtres
+              </button>
+            </div>
+          )}
           <AnimatePresence>
             {grouped.map((group) => {
               const meta = KIND_META[group.kind];
