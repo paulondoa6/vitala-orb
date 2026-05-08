@@ -61,7 +61,18 @@ const Scan = () => {
   const [results, setResults] = useState<ScanResult[]>([]);
   const [progress, setProgress] = useState(0);
   const [seed, setSeed] = useState(0);
+  const [activeFilters, setActiveFilters] = useState<Set<ResultKind>>(new Set());
   const navigate = useNavigate();
+
+  const toggleFilter = (kind: ResultKind) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(kind)) next.delete(kind);
+      else next.add(kind);
+      return next;
+    });
+  };
+  const clearFilters = () => setActiveFilters(new Set());
 
   const pool = useMemo(() => {
     const shuffled = [...POOL].sort(() => Math.random() - 0.5);
