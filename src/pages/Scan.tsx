@@ -113,10 +113,17 @@ const Scan = () => {
 
   const grouped = useMemo(() => {
     const order: ResultKind[] = ["best", "urgent", "flash", "reco", "need", "near"];
+    const filterActive = activeFilters.size > 0;
     return order
+      .filter((kind) => !filterActive || activeFilters.has(kind))
       .map((kind) => ({ kind, items: results.filter((r) => r.kind === kind) }))
       .filter((g) => g.items.length > 0);
-  }, [results]);
+  }, [results, activeFilters]);
+
+  const visibleCount = useMemo(
+    () => grouped.reduce((acc, g) => acc + g.items.length, 0),
+    [grouped]
+  );
 
   const restart = () => {
     setSeed((s) => s + 1);
