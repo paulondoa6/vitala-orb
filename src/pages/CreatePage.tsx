@@ -438,12 +438,12 @@ const CreatePage = () => {
             className="mt-6 space-y-4"
           >
             <header>
-              <h2 className="text-2xl font-semibold tracking-tight">Détails de l'Espace</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Étape 2 : description, contacts et préférences (à venir).</p>
+              <h2 className="text-2xl font-semibold tracking-tight">Services & équipe</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Configure tes services et invite ton personnel.</p>
             </header>
 
-            <div className="rounded-2xl glass shadow-float p-5 space-y-3">
-              <p className="text-sm font-semibold">Récapitulatif</p>
+            {/* Récap */}
+            <div className="rounded-2xl glass shadow-float p-4 space-y-2">
               <div className="flex flex-wrap gap-1.5">
                 {types.map((t) => {
                   const opt = TYPE_OPTIONS.find((o) => o.id === t)!;
@@ -457,22 +457,188 @@ const CreatePage = () => {
                   );
                 })}
               </div>
-              {values.name && (
-                <p className="text-sm">
-                  <span className="text-muted-foreground">Nom · </span>
-                  {values.name}
-                </p>
-              )}
-              {values.locationLabel && (
-                <p className="text-sm">
-                  <span className="text-muted-foreground">Lieu · </span>
-                  {values.locationLabel}
-                </p>
-              )}
+              {values.name && <p className="text-sm font-medium">{values.name}</p>}
             </div>
 
-            <div className="rounded-2xl border border-dashed border-border/60 p-6 text-center text-sm text-muted-foreground">
-              Étape 2 disponible bientôt.
+            {/* Services */}
+            <section className="rounded-2xl glass shadow-float p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Vos services</p>
+                  <p className="text-[11px] text-muted-foreground">Ajoute ce que tu proposes</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addService}
+                  className="rounded-xl"
+                >
+                  <Plus className="mr-1 h-3.5 w-3.5" /> Ajouter
+                </Button>
+              </div>
+
+              <AnimatePresence initial={false}>
+                {services.map((svc, idx) => (
+                  <motion.div
+                    key={svc.id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: 8 }}
+                    className="rounded-xl border border-border/60 bg-background/40 p-3 space-y-2"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-muted text-[10px] font-semibold">
+                        {idx + 1}
+                      </span>
+                      <Input
+                        value={svc.name}
+                        onChange={(e) => updateService(svc.id, { name: e.target.value })}
+                        placeholder="Nom du service"
+                        maxLength={80}
+                        className="h-9 bg-background/60"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeService(svc.id)}
+                        aria-label="Supprimer"
+                        className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Textarea
+                      value={svc.description ?? ""}
+                      onChange={(e) => updateService(svc.id, { description: e.target.value })}
+                      placeholder="Description courte"
+                      maxLength={400}
+                      rows={2}
+                      className="resize-none bg-background/60 text-sm"
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {services.length === 0 && (
+                <p className="rounded-xl border border-dashed border-border/60 p-3 text-center text-xs text-muted-foreground">
+                  Aucun service · facultatif
+                </p>
+              )}
+            </section>
+
+            {/* Personnel */}
+            <section className="rounded-2xl glass shadow-float p-4 space-y-3">
+              <div>
+                <p className="text-sm font-semibold">Votre personnel</p>
+                <p className="text-[11px] text-muted-foreground">Invite par email · rôle Admin ou Modérateur</p>
+              </div>
+
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="relative flex-1">
+                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    type="email"
+                    value={memberDraft.email}
+                    onChange={(e) => setMemberDraft((d) => ({ ...d, email: e.target.value }))}
+                    placeholder="email@exemple.com"
+                    className="h-10 bg-background/60 pl-9"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addMember();
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex rounded-xl border border-border/60 bg-background/40 p-0.5">
+                    {(["admin", "moderator"] as MemberRole[]).map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setMemberDraft((d) => ({ ...d, role: r }))}
+                        className={cn(
+                          "rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                          memberDraft.role === r
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {r === "admin" ? "Admin" : "Modérateur"}
+                      </button>
+                    ))}
+                  </div>
+                  <Button type="button" onClick={addMember} className="rounded-xl">
+                    <Send className="mr-1 h-3.5 w-3.5" /> Inviter
+                  </Button>
+                </div>
+              </div>
+
+              <AnimatePresence initial={false}>
+                {members.map((m) => (
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: 8 }}
+                    className="flex items-center gap-2 rounded-xl border border-border/60 bg-background/40 px-3 py-2"
+                  >
+                    <span
+                      className={cn(
+                        "flex h-7 w-7 items-center justify-center rounded-lg",
+                        m.role === "admin" ? "bg-gradient-primary text-primary-foreground" : "bg-muted text-foreground/70",
+                      )}
+                    >
+                      {m.role === "admin" ? <ShieldCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{m.email}</p>
+                      <p className="text-[10px] capitalize text-muted-foreground">
+                        {m.role === "admin" ? "Admin" : "Modérateur"}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeMember(m.id)}
+                      aria-label="Retirer"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </section>
+
+            {/* CTA */}
+            <div className="sticky bottom-24 grid grid-cols-3 gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep(1)}
+                className="h-12 rounded-2xl"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                onClick={onSubmit}
+                disabled={submitting}
+                className="col-span-2 h-12 rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow disabled:opacity-50"
+              >
+                {submitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    Créer l'Espace
+                    <Sparkles className="ml-1 h-4 w-4" />
+                  </>
+                )}
+              </Button>
             </div>
           </motion.section>
         )}
