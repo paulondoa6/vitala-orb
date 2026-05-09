@@ -30,14 +30,17 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
   fileToBase64,
   loadDraft,
   saveDraft,
+  clearDraft,
   NAME_REQUIRED_TYPES,
   type SpaceType,
 } from "@/lib/spaceStore";
+import { createBoite, type Service, type Member, type MemberRole } from "@/lib/boiteStore";
 import { useToast } from "@/hooks/use-toast";
 
 type TypeOption = { id: SpaceType; label: string; hint: string; icon: LucideIcon };
