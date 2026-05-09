@@ -26,6 +26,7 @@ const App = () => (
           <Route path="/map" element={<MapPage />} />
           <Route path="/scan" element={<Scan />} />
           <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/create" element={<CreatePage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/settings" element={<Settings />} />
