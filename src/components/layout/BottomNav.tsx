@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { Activity, Zap, MapPin, Settings } from "lucide-react";
+import { LayoutGrid, Zap, MapPin, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavItem } from "./NavItem";
 import { ScanButton } from "./ScanButton";
