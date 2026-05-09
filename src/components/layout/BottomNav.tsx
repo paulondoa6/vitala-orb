@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { Activity, Zap, MapPin, Settings } from "lucide-react";
+import { LayoutGrid, Zap, MapPin, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavItem } from "./NavItem";
 import { ScanButton } from "./ScanButton";
@@ -9,7 +9,7 @@ const items = [
   { to: "/map", icon: MapPin, label: "Zone" },
 ];
 const itemsRight = [
-  { to: "/activity", icon: Activity, label: "Activity" },
+  { to: "/create", icon: LayoutGrid, label: "Espace" },
   { to: "/settings", icon: Settings, label: "Paramètres" },
 ];
 

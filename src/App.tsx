@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import MapPage from "./pages/MapPage";
 import Scan from "./pages/Scan";
 import ActivityPage from "./pages/ActivityPage";
+import CreatePage from "./pages/CreatePage";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/map" element={<MapPage />} />
           <Route path="/scan" element={<Scan />} />
           <Route path="/activity" element={<ActivityPage />} />
+          <Route path="/create" element={<CreatePage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/settings" element={<Settings />} />
