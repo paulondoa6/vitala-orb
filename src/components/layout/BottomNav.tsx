@@ -9,7 +9,7 @@ const items = [
   { to: "/map", icon: MapPin, label: "Zone" },
 ];
 const itemsRight = [
-  { to: "/activity", icon: Activity, label: "Activity" },
+  { to: "/create", icon: LayoutGrid, label: "Espace" },
   { to: "/settings", icon: Settings, label: "Paramètres" },
 ];
 
