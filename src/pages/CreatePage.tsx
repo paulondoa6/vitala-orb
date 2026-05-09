@@ -75,8 +75,33 @@ const CreatePage = () => {
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [memberDraft, setMemberDraft] = useState<{ email: string; role: MemberRole }>({ email: "", role: "moderator" });
   const fileRef = useRef<HTMLInputElement>(null);
   const draftId = useRef<string>(`sp_${Date.now().toString(36)}`);
+
+  const addService = () =>
+    setServices((s) => [...s, { id: `svc_${Date.now().toString(36)}_${s.length}`, name: "", description: "" }]);
+  const updateService = (id: string, patch: Partial<Service>) =>
+    setServices((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  const removeService = (id: string) => setServices((s) => s.filter((x) => x.id !== id));
+
+  const addMember = () => {
+    const email = memberDraft.email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({ title: "Email invalide", variant: "destructive" });
+      return;
+    }
+    if (members.some((m) => m.email === email)) {
+      toast({ title: "Déjà invité", variant: "destructive" });
+      return;
+    }
+    setMembers((m) => [...m, { id: `mb_${Date.now().toString(36)}`, email, role: memberDraft.role, invitedAt: Date.now() }]);
+    setMemberDraft({ email: "", role: memberDraft.role });
+  };
+  const removeMember = (id: string) => setMembers((m) => m.filter((x) => x.id !== id));
 
   const { control, register, handleSubmit, watch, setValue, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
