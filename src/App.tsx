@@ -28,6 +28,8 @@ const App = () => (
           <Route path="/scan" element={<Scan />} />
           <Route path="/activity" element={<ActivityPage />} />
           <Route path="/create" element={<CreatePage />} />
+          <Route path="/boite/:uuid" element={<BoiteDetail />} />
+          <Route path="/espace/:uuid" element={<BoiteDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/settings" element={<Settings />} />
