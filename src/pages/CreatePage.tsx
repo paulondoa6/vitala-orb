@@ -188,6 +188,33 @@ const CreatePage = () => {
 
   const onNext = handleSubmit(() => setStep(2));
 
+  const onSubmit = handleSubmit(async (v) => {
+    setSubmitting(true);
+    try {
+      const cleanedServices = services
+        .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
+        .filter((s) => s.name.length > 0);
+      const boite = await createBoite({
+        types: v.types as SpaceType[],
+        name: v.name?.trim() || undefined,
+        logo: v.logo,
+        location:
+          v.locationLabel || v.lat
+            ? { label: v.locationLabel || undefined, lat: v.lat, lng: v.lng }
+            : undefined,
+        services: cleanedServices,
+        members,
+      });
+      await clearDraft();
+      toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
+      navigate(`/boite/${boite.uuid}`);
+    } catch (e) {
+      toast({ title: "Échec de création", description: String(e), variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  });
+
   return (
     <AppShell>
       {/* Header */}
