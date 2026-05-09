@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import MapPage from "./pages/MapPage";
 import Scan from "./pages/Scan";
 import ActivityPage from "./pages/ActivityPage";
+import CreatePage from "./pages/CreatePage";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
