@@ -134,6 +134,17 @@ const CreatePage = () => {
     });
   }, [setValue]);
 
+  // Focus management for the loading dialog
+  useEffect(() => {
+    if (submitting) {
+      lastFocusedRef.current = (document.activeElement as HTMLElement) ?? null;
+      requestAnimationFrame(() => dialogRef.current?.focus());
+    } else if (lastFocusedRef.current) {
+      lastFocusedRef.current.focus?.();
+      lastFocusedRef.current = null;
+    }
+  }, [submitting]);
+
   // Auto-save draft (debounced)
   useEffect(() => {
     const t = setTimeout(() => {
