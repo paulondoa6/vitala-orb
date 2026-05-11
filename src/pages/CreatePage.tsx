@@ -78,6 +78,7 @@ const CreatePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
+  const [error, setError] = useState<{ label: string; message: string } | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [memberDraft, setMemberDraft] = useState<{ email: string; role: MemberRole }>({ email: "", role: "moderator" });
@@ -192,19 +193,23 @@ const CreatePage = () => {
 
   const onSubmit = handleSubmit(async (v) => {
     setSubmitting(true);
+    setError(null);
+    let currentLabel = "Préparation des données…";
     setProgress(8);
-    setProgressLabel("Préparation des données…");
+    setProgressLabel(currentLabel);
     try {
       const cleanedServices = services
         .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
         .filter((s) => s.name.length > 0);
 
+      currentLabel = "Génération du numéro unique…";
       setProgress(28);
-      setProgressLabel("Génération du numéro unique…");
+      setProgressLabel(currentLabel);
       await new Promise((r) => setTimeout(r, 180));
 
+      currentLabel = "Sauvegarde sécurisée…";
       setProgress(55);
-      setProgressLabel("Sauvegarde sécurisée…");
+      setProgressLabel(currentLabel);
       const boite = await createBoite({
         types: v.types as SpaceType[],
         name: v.name?.trim() || undefined,
@@ -217,8 +222,9 @@ const CreatePage = () => {
         members,
       });
 
+      currentLabel = "Finalisation…";
       setProgress(82);
-      setProgressLabel("Finalisation…");
+      setProgressLabel(currentLabel);
       await clearDraft();
 
       setProgress(100);
@@ -227,10 +233,16 @@ const CreatePage = () => {
       await new Promise((r) => setTimeout(r, 350));
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
-      toast({ title: "Échec de création", description: String(e), variant: "destructive" });
-      setSubmitting(false);
+      const message = e instanceof Error ? e.message : String(e);
+      setError({ label: currentLabel, message });
       setProgress(0);
       setProgressLabel("");
+      setSubmitting(false);
+      toast({
+        title: "Échec de création",
+        description: `${currentLabel} — ${message}`,
+        variant: "destructive",
+      });
     }
   });
 
@@ -632,6 +644,44 @@ const CreatePage = () => {
                 ))}
               </AnimatePresence>
             </section>
+
+            {/* Error retry banner */}
+            <AnimatePresence>
+              {error && !submitting && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  role="alert"
+                  className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm"
+                >
+                  <p className="font-semibold text-destructive">Échec à l'étape : {error.label}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{error.message}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Tes informations sont conservées. Tu peux réessayer.
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={onSubmit}
+                      className="rounded-xl bg-gradient-primary text-primary-foreground"
+                    >
+                      Réessayer
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setError(null)}
+                      className="rounded-xl"
+                    >
+                      Fermer
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* CTA */}
             <div className="sticky bottom-24 grid grid-cols-3 gap-2 pt-2">
