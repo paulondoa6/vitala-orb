@@ -718,6 +718,7 @@ const CreatePage = () => {
           </motion.section>
         )}
       </AnimatePresence>
+      </fieldset>
 
       {/* Progress overlay */}
       <AnimatePresence>
