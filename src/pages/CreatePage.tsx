@@ -267,6 +267,7 @@ const CreatePage = () => {
         </div>
       </div>
 
+      <fieldset disabled={submitting} aria-busy={submitting} className="m-0 min-w-0 border-0 p-0">
       <AnimatePresence mode="wait">
         {step === 1 ? (
           <motion.section
