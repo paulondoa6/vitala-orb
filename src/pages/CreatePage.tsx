@@ -193,19 +193,23 @@ const CreatePage = () => {
 
   const onSubmit = handleSubmit(async (v) => {
     setSubmitting(true);
+    setError(null);
+    let currentLabel = "Préparation des données…";
     setProgress(8);
-    setProgressLabel("Préparation des données…");
+    setProgressLabel(currentLabel);
     try {
       const cleanedServices = services
         .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
         .filter((s) => s.name.length > 0);
 
+      currentLabel = "Génération du numéro unique…";
       setProgress(28);
-      setProgressLabel("Génération du numéro unique…");
+      setProgressLabel(currentLabel);
       await new Promise((r) => setTimeout(r, 180));
 
+      currentLabel = "Sauvegarde sécurisée…";
       setProgress(55);
-      setProgressLabel("Sauvegarde sécurisée…");
+      setProgressLabel(currentLabel);
       const boite = await createBoite({
         types: v.types as SpaceType[],
         name: v.name?.trim() || undefined,
@@ -218,8 +222,9 @@ const CreatePage = () => {
         members,
       });
 
+      currentLabel = "Finalisation…";
       setProgress(82);
-      setProgressLabel("Finalisation…");
+      setProgressLabel(currentLabel);
       await clearDraft();
 
       setProgress(100);
@@ -228,10 +233,16 @@ const CreatePage = () => {
       await new Promise((r) => setTimeout(r, 350));
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
-      toast({ title: "Échec de création", description: String(e), variant: "destructive" });
-      setSubmitting(false);
+      const message = e instanceof Error ? e.message : String(e);
+      setError({ label: currentLabel, message });
       setProgress(0);
       setProgressLabel("");
+      setSubmitting(false);
+      toast({
+        title: "Échec de création",
+        description: `${currentLabel} — ${message}`,
+        variant: "destructive",
+      });
     }
   });
 
