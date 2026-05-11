@@ -83,6 +83,8 @@ const CreatePage = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [memberDraft, setMemberDraft] = useState<{ email: string; role: MemberRole }>({ email: "", role: "moderator" });
   const fileRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   const draftId = useRef<string>(`sp_${Date.now().toString(36)}`);
 
   const addService = () =>
