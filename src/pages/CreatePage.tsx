@@ -76,6 +76,8 @@ const CreatePage = () => {
   const [step, setStep] = useState<1 | 2>(1);
   const [geoLoading, setGeoLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("");
   const [services, setServices] = useState<Service[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [memberDraft, setMemberDraft] = useState<{ email: string; role: MemberRole }>({ email: "", role: "moderator" });
@@ -190,10 +192,19 @@ const CreatePage = () => {
 
   const onSubmit = handleSubmit(async (v) => {
     setSubmitting(true);
+    setProgress(8);
+    setProgressLabel("Préparation des données…");
     try {
       const cleanedServices = services
         .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
         .filter((s) => s.name.length > 0);
+
+      setProgress(28);
+      setProgressLabel("Génération du numéro unique…");
+      await new Promise((r) => setTimeout(r, 180));
+
+      setProgress(55);
+      setProgressLabel("Sauvegarde sécurisée…");
       const boite = await createBoite({
         types: v.types as SpaceType[],
         name: v.name?.trim() || undefined,
@@ -205,13 +216,21 @@ const CreatePage = () => {
         services: cleanedServices,
         members,
       });
+
+      setProgress(82);
+      setProgressLabel("Finalisation…");
       await clearDraft();
+
+      setProgress(100);
+      setProgressLabel("Espace créée !");
       toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
+      await new Promise((r) => setTimeout(r, 350));
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
       toast({ title: "Échec de création", description: String(e), variant: "destructive" });
-    } finally {
       setSubmitting(false);
+      setProgress(0);
+      setProgressLabel("");
     }
   });
 
@@ -620,6 +639,7 @@ const CreatePage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => setStep(1)}
+                disabled={submitting}
                 className="h-12 rounded-2xl"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -628,10 +648,14 @@ const CreatePage = () => {
                 type="button"
                 onClick={onSubmit}
                 disabled={submitting}
-                className="col-span-2 h-12 rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow disabled:opacity-50"
+                aria-busy={submitting}
+                className="col-span-2 h-12 rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow disabled:opacity-70"
               >
                 {submitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {progress < 100 ? `Création… ${progress}%` : "Redirection…"}
+                  </>
                 ) : (
                   <>
                     Créer l'Espace
@@ -641,6 +665,42 @@ const CreatePage = () => {
               </Button>
             </div>
           </motion.section>
+        )}
+      </AnimatePresence>
+
+      {/* Progress overlay */}
+      <AnimatePresence>
+        {submitting && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 8 }}
+              animate={{ scale: 1, y: 0 }}
+              className="w-[88%] max-w-sm rounded-2xl glass shadow-float p-6 text-center"
+            >
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow">
+                {progress < 100 ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Check className="h-5 w-5" strokeWidth={3} />
+                )}
+              </div>
+              <p className="text-sm font-semibold">{progressLabel || "Création en cours…"}</p>
+              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-primary"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                />
+              </div>
+              <p className="mt-2 text-[11px] tabular-nums text-muted-foreground">{progress}%</p>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </AppShell>
