@@ -645,6 +645,44 @@ const CreatePage = () => {
               </AnimatePresence>
             </section>
 
+            {/* Error retry banner */}
+            <AnimatePresence>
+              {error && !submitting && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  role="alert"
+                  className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm"
+                >
+                  <p className="font-semibold text-destructive">Échec à l'étape : {error.label}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{error.message}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Tes informations sont conservées. Tu peux réessayer.
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={onSubmit}
+                      className="rounded-xl bg-gradient-primary text-primary-foreground"
+                    >
+                      Réessayer
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setError(null)}
+                      className="rounded-xl"
+                    >
+                      Fermer
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* CTA */}
             <div className="sticky bottom-24 grid grid-cols-3 gap-2 pt-2">
               <Button
