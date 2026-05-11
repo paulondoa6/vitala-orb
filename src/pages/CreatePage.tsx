@@ -83,6 +83,8 @@ const CreatePage = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [memberDraft, setMemberDraft] = useState<{ email: string; role: MemberRole }>({ email: "", role: "moderator" });
   const fileRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   const draftId = useRef<string>(`sp_${Date.now().toString(36)}`);
 
   const addService = () =>
@@ -131,6 +133,17 @@ const CreatePage = () => {
       setStep(d.step);
     });
   }, [setValue]);
+
+  // Focus management for the loading dialog
+  useEffect(() => {
+    if (submitting) {
+      lastFocusedRef.current = (document.activeElement as HTMLElement) ?? null;
+      requestAnimationFrame(() => dialogRef.current?.focus());
+    } else if (lastFocusedRef.current) {
+      lastFocusedRef.current.focus?.();
+      lastFocusedRef.current = null;
+    }
+  }, [submitting]);
 
   // Auto-save draft (debounced)
   useEffect(() => {
@@ -267,6 +280,7 @@ const CreatePage = () => {
         </div>
       </div>
 
+      <fieldset disabled={submitting} aria-busy={submitting} className="m-0 min-w-0 border-0 p-0">
       <AnimatePresence mode="wait">
         {step === 1 ? (
           <motion.section
@@ -717,6 +731,7 @@ const CreatePage = () => {
           </motion.section>
         )}
       </AnimatePresence>
+      </fieldset>
 
       {/* Progress overlay */}
       <AnimatePresence>
@@ -725,22 +740,42 @@ const CreatePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-progress-label"
+            aria-describedby="create-progress-percent"
             className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm"
           >
             <motion.div
+              ref={dialogRef}
+              tabIndex={-1}
               initial={{ scale: 0.95, y: 8 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-[88%] max-w-sm rounded-2xl glass shadow-float p-6 text-center"
+              className="w-[88%] max-w-sm rounded-2xl glass shadow-float p-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow">
                 {progress < 100 ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
                 ) : (
-                  <Check className="h-5 w-5" strokeWidth={3} />
+                  <Check className="h-5 w-5" strokeWidth={3} aria-hidden="true" />
                 )}
               </div>
-              <p className="text-sm font-semibold">{progressLabel || "Création en cours…"}</p>
-              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
+              <p
+                id="create-progress-label"
+                aria-live="polite"
+                aria-atomic="true"
+                className="text-sm font-semibold"
+              >
+                {progressLabel || "Création en cours…"}
+              </p>
+              <div
+                className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+                aria-valuetext={`${progress}%`}
+              >
                 <motion.div
                   className="h-full rounded-full bg-gradient-primary"
                   initial={{ width: 0 }}
@@ -748,7 +783,17 @@ const CreatePage = () => {
                   transition={{ type: "spring", stiffness: 120, damping: 20 }}
                 />
               </div>
-              <p className="mt-2 text-[11px] tabular-nums text-muted-foreground">{progress}%</p>
+              <p
+                id="create-progress-percent"
+                aria-live="polite"
+                aria-atomic="true"
+                className="mt-2 text-[11px] tabular-nums text-muted-foreground"
+              >
+                {progress}%
+              </p>
+              <span className="sr-only" aria-live="assertive">
+                {progress === 100 ? "Création terminée, redirection en cours" : ""}
+              </span>
             </motion.div>
           </motion.div>
         )}
