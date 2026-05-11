@@ -192,10 +192,19 @@ const CreatePage = () => {
 
   const onSubmit = handleSubmit(async (v) => {
     setSubmitting(true);
+    setProgress(8);
+    setProgressLabel("Préparation des données…");
     try {
       const cleanedServices = services
         .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
         .filter((s) => s.name.length > 0);
+
+      setProgress(28);
+      setProgressLabel("Génération du numéro unique…");
+      await new Promise((r) => setTimeout(r, 180));
+
+      setProgress(55);
+      setProgressLabel("Sauvegarde sécurisée…");
       const boite = await createBoite({
         types: v.types as SpaceType[],
         name: v.name?.trim() || undefined,
@@ -207,13 +216,21 @@ const CreatePage = () => {
         services: cleanedServices,
         members,
       });
+
+      setProgress(82);
+      setProgressLabel("Finalisation…");
       await clearDraft();
+
+      setProgress(100);
+      setProgressLabel("Espace créée !");
       toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
+      await new Promise((r) => setTimeout(r, 350));
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
       toast({ title: "Échec de création", description: String(e), variant: "destructive" });
-    } finally {
       setSubmitting(false);
+      setProgress(0);
+      setProgressLabel("");
     }
   });
 
