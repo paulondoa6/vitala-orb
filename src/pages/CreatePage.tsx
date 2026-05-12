@@ -236,6 +236,9 @@ const CreatePage = () => {
   const onNext = handleSubmit(() => setStep(2));
 
   const onSubmit = handleSubmit(async (v) => {
+    // Guard against double-clicks and resubmits during/after redirect
+    if (submittingRef.current || submittedRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     setError(null);
     let currentLabel = "Préparation des données…";
