@@ -278,6 +278,7 @@ const CreatePage = () => {
       setProgressLabel("Espace créée !");
       toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
       await new Promise((r) => setTimeout(r, 350));
+      submittedRef.current = true;
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
@@ -285,6 +286,7 @@ const CreatePage = () => {
       setProgress(0);
       setProgressLabel("");
       setSubmitting(false);
+      submittingRef.current = false;
       toast({
         title: "Échec de création",
         description: `${currentLabel} — ${message}`,
