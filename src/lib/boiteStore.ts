@@ -59,8 +59,29 @@ export const getCurrentOwnerId = (): string => {
   return id;
 };
 
-export const createBoite = async (input: Omit<Boite, "uuid" | "createdAt" | "updatedAt" | "ownerGoogleId">) => {
-  const uuid = generateBoiteUuid();
+export type CreateBoiteStep =
+  | { key: "validate"; label: string; progress: number }
+  | { key: "uuid"; label: string; progress: number }
+  | { key: "prepare"; label: string; progress: number }
+  | { key: "persist"; label: string; progress: number }
+  | { key: "verify"; label: string; progress: number }
+  | { key: "done"; label: string; progress: number };
+
+export const createBoite = async (
+  input: Omit<Boite, "uuid" | "createdAt" | "updatedAt" | "ownerGoogleId">,
+  onProgress?: (s: CreateBoiteStep) => void,
+) => {
+  onProgress?.({ key: "validate", label: "Validation des champs…", progress: 10 });
+  if (!input.types || input.types.length === 0) {
+    throw new Error("Au moins un type d'espace est requis");
+  }
+
+  onProgress?.({ key: "uuid", label: "Génération du numéro unique…", progress: 25 });
+  let uuid = generateBoiteUuid();
+  // Avoid (extremely rare) collisions
+  for (let i = 0; i < 5 && (await db.boites.get(uuid)); i++) uuid = generateBoiteUuid();
+
+  onProgress?.({ key: "prepare", label: "Préparation de l'enregistrement…", progress: 45 });
   const now = Date.now();
   const boite: Boite = {
     ...input,
@@ -69,8 +90,16 @@ export const createBoite = async (input: Omit<Boite, "uuid" | "createdAt" | "upd
     createdAt: now,
     updatedAt: now,
   };
+
+  onProgress?.({ key: "persist", label: "Sauvegarde dans la base locale…", progress: 70 });
   await db.boites.add(boite);
-  return boite;
+
+  onProgress?.({ key: "verify", label: "Vérification de l'enregistrement…", progress: 90 });
+  const persisted = await db.boites.get(uuid);
+  if (!persisted) throw new Error("Échec de vérification après sauvegarde");
+
+  onProgress?.({ key: "done", label: "Espace créée !", progress: 100 });
+  return persisted;
 };
 
 export const getBoite = (uuid: string) => db.boites.get(uuid);
