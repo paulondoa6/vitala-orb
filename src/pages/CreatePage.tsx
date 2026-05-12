@@ -86,6 +86,8 @@ const CreatePage = () => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const draftId = useRef<string>(`sp_${Date.now().toString(36)}`);
+  const submittingRef = useRef(false);
+  const submittedRef = useRef(false);
 
   const addService = () =>
     setServices((s) => [...s, { id: `svc_${Date.now().toString(36)}_${s.length}`, name: "", description: "" }]);
