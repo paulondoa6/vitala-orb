@@ -242,35 +242,35 @@ const CreatePage = () => {
     setSubmitting(true);
     setError(null);
     let currentLabel = "Préparation des données…";
-    setProgress(8);
+    setProgress(4);
     setProgressLabel(currentLabel);
     try {
       const cleanedServices = services
         .map((s) => ({ ...s, name: s.name.trim(), description: s.description?.trim() }))
         .filter((s) => s.name.length > 0);
 
-      currentLabel = "Génération du numéro unique…";
-      setProgress(28);
-      setProgressLabel(currentLabel);
-      await new Promise((r) => setTimeout(r, 180));
-
-      currentLabel = "Sauvegarde sécurisée…";
-      setProgress(55);
-      setProgressLabel(currentLabel);
-      const boite = await createBoite({
-        types: v.types as SpaceType[],
-        name: v.name?.trim() || undefined,
-        logo: v.logo,
-        location:
-          v.locationLabel || v.lat
-            ? { label: v.locationLabel || undefined, lat: v.lat, lng: v.lng }
-            : undefined,
-        services: cleanedServices,
-        members,
-      });
+      const boite = await createBoite(
+        {
+          types: v.types as SpaceType[],
+          name: v.name?.trim() || undefined,
+          logo: v.logo,
+          location:
+            v.locationLabel || v.lat
+              ? { label: v.locationLabel || undefined, lat: v.lat, lng: v.lng }
+              : undefined,
+          services: cleanedServices,
+          members,
+        },
+        (s) => {
+          currentLabel = s.label;
+          // Cap at 95% so the finalisation step can land on 100
+          setProgress(Math.min(95, s.progress));
+          setProgressLabel(s.label);
+        },
+      );
 
       currentLabel = "Finalisation…";
-      setProgress(82);
+      setProgress(97);
       setProgressLabel(currentLabel);
       await clearDraft();
 
