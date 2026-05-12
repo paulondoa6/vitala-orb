@@ -134,15 +134,44 @@ const CreatePage = () => {
     });
   }, [setValue]);
 
-  // Focus management for the loading dialog
+  // Focus management + focus trap + key blocking for the loading dialog
   useEffect(() => {
-    if (submitting) {
-      lastFocusedRef.current = (document.activeElement as HTMLElement) ?? null;
-      requestAnimationFrame(() => dialogRef.current?.focus());
-    } else if (lastFocusedRef.current) {
-      lastFocusedRef.current.focus?.();
-      lastFocusedRef.current = null;
+    if (!submitting) {
+      if (lastFocusedRef.current) {
+        lastFocusedRef.current.focus?.();
+        lastFocusedRef.current = null;
+      }
+      return;
     }
+    lastFocusedRef.current = (document.activeElement as HTMLElement) ?? null;
+    requestAnimationFrame(() => dialogRef.current?.focus());
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      // Block Escape and Enter from closing/triggering anything during submit
+      if (e.key === "Escape" || e.key === "Enter") {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      // Trap Tab inside the dialog
+      if (e.key === "Tab") {
+        e.preventDefault();
+        dialogRef.current?.focus();
+      }
+    };
+    // Prevent focus from leaving the dialog
+    const onFocusIn = (e: FocusEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(e.target as Node)) {
+        e.stopPropagation();
+        dialogRef.current.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("focusin", onFocusIn, true);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("focusin", onFocusIn, true);
+    };
   }, [submitting]);
 
   // Auto-save draft (debounced)
