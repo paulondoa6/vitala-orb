@@ -86,6 +86,8 @@ const CreatePage = () => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const draftId = useRef<string>(`sp_${Date.now().toString(36)}`);
+  const submittingRef = useRef(false);
+  const submittedRef = useRef(false);
 
   const addService = () =>
     setServices((s) => [...s, { id: `svc_${Date.now().toString(36)}_${s.length}`, name: "", description: "" }]);
@@ -234,6 +236,9 @@ const CreatePage = () => {
   const onNext = handleSubmit(() => setStep(2));
 
   const onSubmit = handleSubmit(async (v) => {
+    // Guard against double-clicks and resubmits during/after redirect
+    if (submittingRef.current || submittedRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     setError(null);
     let currentLabel = "Préparation des données…";
@@ -273,6 +278,7 @@ const CreatePage = () => {
       setProgressLabel("Espace créée !");
       toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
       await new Promise((r) => setTimeout(r, 350));
+      submittedRef.current = true;
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
@@ -280,6 +286,7 @@ const CreatePage = () => {
       setProgress(0);
       setProgressLabel("");
       setSubmitting(false);
+      submittingRef.current = false;
       toast({
         title: "Échec de création",
         description: `${currentLabel} — ${message}`,
