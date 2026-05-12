@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Copy,
@@ -15,44 +15,157 @@ import {
   UserPlus,
   MapPin,
   Check,
+  Loader2,
+  ScanLine,
+  ShieldAlert,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { getBoite, generateShareLink, type Boite } from "@/lib/boiteStore";
+import {
+  getBoite,
+  generateShareLink,
+  isValidBoiteUuid,
+  type Boite,
+} from "@/lib/boiteStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+
+type VerifyStep = "format" | "lookup" | "ready";
+type VerifyState =
+  | { phase: "verifying"; step: VerifyStep; progress: number; label: string }
+  | { phase: "invalid"; reason: "format" | "notfound"; message: string }
+  | { phase: "ready" };
 
 const BoiteDetail = () => {
   const { uuid = "" } = useParams();
   const navigate = useNavigate();
-  const [boite, setBoite] = useState<Boite | null | undefined>(undefined);
+  const [boite, setBoite] = useState<Boite | null>(null);
   const [copied, setCopied] = useState(false);
+  const [verify, setVerify] = useState<VerifyState>({
+    phase: "verifying",
+    step: "format",
+    progress: 10,
+    label: "Vérification du numéro unique…",
+  });
 
   useEffect(() => {
-    getBoite(uuid).then((b) => setBoite(b ?? null));
+    let cancelled = false;
+    const run = async () => {
+      setVerify({ phase: "verifying", step: "format", progress: 15, label: "Vérification du numéro unique…" });
+      await new Promise((r) => setTimeout(r, 200));
+      if (cancelled) return;
+      if (!isValidBoiteUuid(uuid)) {
+        setVerify({
+          phase: "invalid",
+          reason: "format",
+          message: `Le code « ${uuid} » n'est pas un numéro unique valide (6 caractères).`,
+        });
+        return;
+      }
+      setVerify({ phase: "verifying", step: "lookup", progress: 55, label: "Chargement de la salle correspondante…" });
+      const found = await getBoite(uuid);
+      if (cancelled) return;
+      if (!found) {
+        setVerify({
+          phase: "invalid",
+          reason: "notfound",
+          message: `Aucune Espace n'est associée au code ${uuid}.`,
+        });
+        return;
+      }
+      setBoite(found);
+      setVerify({ phase: "verifying", step: "ready", progress: 100, label: "Espace validée !" });
+      await new Promise((r) => setTimeout(r, 350));
+      if (cancelled) return;
+      setVerify({ phase: "ready" });
+      toast.success("Salle chargée", { description: `Numéro ${found.uuid}` });
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
   }, [uuid]);
 
-  if (boite === undefined) {
+  // Verification screen (loading + scan CTA)
+  if (verify.phase === "verifying") {
     return (
       <AppShell>
-        <p className="mt-10 text-center text-sm text-muted-foreground">Chargement…</p>
-      </AppShell>
-    );
-  }
-
-  if (boite === null) {
-    return (
-      <AppShell>
-        <div className="mt-10 space-y-3 text-center">
-          <p className="text-lg font-semibold">Espace introuvable</p>
-          <p className="text-sm text-muted-foreground">L'identifiant {uuid} n'existe pas.</p>
-          <Link to="/create" className="inline-block text-sm text-primary underline">
-            Créer un Espace
-          </Link>
+        <div className="flex min-h-[70vh] flex-col items-center justify-center gap-5 px-4 text-center">
+          <div className="rounded-3xl border border-border/60 bg-white p-4 shadow-float">
+            <QRCodeCanvas value={generateShareLink(uuid || "------")} size={168} level="M" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Numéro à vérifier</p>
+            <p className="font-mono text-2xl font-bold tracking-[0.3em]">{uuid || "------"}</p>
+          </div>
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex items-center gap-2 rounded-full glass shadow-float px-4 py-2 text-xs font-medium"
+          >
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+            {verify.label}
+          </div>
+          <div
+            className="h-1.5 w-56 overflow-hidden rounded-full bg-muted"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={verify.progress}
+          >
+            <motion.div
+              className="h-full rounded-full bg-gradient-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${verify.progress}%` }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/scan")}
+            className="rounded-xl text-xs text-muted-foreground"
+          >
+            <ScanLine className="mr-1 h-3.5 w-3.5" /> Scanner un autre QR
+          </Button>
         </div>
       </AppShell>
     );
   }
+
+  if (verify.phase === "invalid") {
+    return (
+      <AppShell>
+        <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-4 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
+            <ShieldAlert className="h-6 w-6" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-lg font-semibold">
+              {verify.reason === "format" ? "Numéro invalide" : "Espace introuvable"}
+            </p>
+            <p className="max-w-sm text-sm text-muted-foreground">{verify.message}</p>
+          </div>
+          <div className="flex w-full max-w-xs flex-col gap-2">
+            <Button
+              onClick={() => navigate("/scan")}
+              className="h-11 w-full rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow"
+            >
+              <ScanLine className="mr-1 h-4 w-4" /> Scanner un QR code
+            </Button>
+            <Link
+              to="/create"
+              className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+            >
+              ou créer un nouvel Espace
+            </Link>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (!boite) return null;
 
   const link = generateShareLink(boite.uuid);
   const shareText = `Découvre mon Espace ${boite.name ?? ""} sur Vitalio`;
