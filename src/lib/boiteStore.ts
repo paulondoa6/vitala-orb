@@ -46,6 +46,9 @@ export const db = new VitalioDB();
 const nano = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 export const generateBoiteUuid = () => nano();
 
+const UUID_RE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/;
+export const isValidBoiteUuid = (v: string): boolean => UUID_RE.test(v);
+
 export const generateShareLink = (uuid: string) =>
   `${typeof window !== "undefined" ? window.location.origin : "https://tonapp.com"}/espace/${uuid}`;
 
