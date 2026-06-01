@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { TabTransition } from "./TabTransition";
+import { AssistantWidget } from "@/components/assistant/AssistantWidget";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   return (
@@ -11,6 +12,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
         <TabTransition>{children}</TabTransition>
       </main>
       <BottomNav />
+      <AssistantWidget />
     </div>
   );
 };
