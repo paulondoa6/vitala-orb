@@ -29,6 +29,7 @@ import {
 import { useProfile } from "@/lib/profileStore";
 import { NotificationPreferences } from "@/components/profile/NotificationPreferences";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
+import { BoitesCard } from "@/components/profile/BoitesCard";
 import { Link } from "react-router-dom";
 
 const stats = [
@@ -144,6 +145,10 @@ const Profile = () => {
         </div>
       ))}
     </section>
+
+    </section>
+
+    <BoitesCard />
 
     {/* Trust & credibility */}
     <section className="mt-6">
