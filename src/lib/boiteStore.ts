@@ -105,4 +105,13 @@ export const createBoite = async (
   return persisted;
 };
 
-export const getBoite = (uuid: string) => db.boites.get(uuid);
+export const getBoite = async (uuid: string): Promise<Boite | undefined> => {
+  const found = await db.boites.get(uuid);
+  if (found) return found;
+  const { findMockBoite } = await import("./boiteMocks");
+  return findMockBoite(uuid);
+};
+
+export const listBoitesByOwner = async (ownerGoogleId: string): Promise<Boite[]> => {
+  return db.boites.where("ownerGoogleId").equals(ownerGoogleId).reverse().sortBy("updatedAt");
+};

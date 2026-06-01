@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { LayoutGrid, Zap, MapPin, Settings } from "lucide-react";
+import { LayoutGrid, Zap, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavItem } from "./NavItem";
 import { ScanButton } from "./ScanButton";
@@ -10,7 +10,6 @@ const items = [
 ];
 const itemsRight = [
   { to: "/create", icon: LayoutGrid, label: "Espace" },
-  { to: "/settings", icon: Settings, label: "Paramètres" },
 ];
 
 export const BottomNav = () => {
