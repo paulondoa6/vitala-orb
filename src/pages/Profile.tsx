@@ -146,9 +146,9 @@ const Profile = () => {
       ))}
     </section>
 
-    </section>
-
     <BoitesCard />
+
+
 
     {/* Trust & credibility */}
     <section className="mt-6">
