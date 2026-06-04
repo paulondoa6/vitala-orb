@@ -13,7 +13,7 @@ export const TopBar = () => {
       className="sticky top-0 z-40 w-full"
     >
       <div className="glass">
-        <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
+        <div className="relative mx-auto flex h-14 max-w-md items-center justify-between px-5">
           <Link
             to="/"
             aria-label="Accueil"
