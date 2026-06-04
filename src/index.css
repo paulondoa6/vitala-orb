@@ -4,43 +4,43 @@
 
 @layer base {
   :root {
-    --background: 240 20% 98%;
-    --foreground: 240 15% 9%;
+    --background: 36 36% 95%;
+    --foreground: 100 18% 14%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 15% 9%;
+    --card: 36 40% 98%;
+    --card-foreground: 100 18% 14%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 15% 9%;
+    --popover: 36 40% 98%;
+    --popover-foreground: 100 18% 14%;
 
-    --primary: 158 84% 45%;
-    --primary-foreground: 158 100% 6%;
-    --primary-glow: 168 90% 60%;
+    --primary: 107 18% 48%;
+    --primary-foreground: 36 40% 98%;
+    --primary-glow: 107 24% 68%;
 
-    --secondary: 240 10% 95%;
-    --secondary-foreground: 240 15% 12%;
+    --secondary: 96 22% 88%;
+    --secondary-foreground: 100 18% 18%;
 
-    --muted: 240 10% 95%;
-    --muted-foreground: 240 6% 45%;
+    --muted: 36 22% 90%;
+    --muted-foreground: 100 8% 38%;
 
-    --accent: 280 80% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 96 22% 82%;
+    --accent-foreground: 100 18% 18%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 8 60% 52%;
+    --destructive-foreground: 36 40% 98%;
 
-    --border: 240 10% 90%;
-    --input: 240 10% 90%;
-    --ring: 158 84% 45%;
+    --border: 36 18% 84%;
+    --input: 36 18% 84%;
+    --ring: 107 18% 48%;
 
     --radius: 1.25rem;
 
-    --glass: 0 0% 100% / 0.6;
-    --glass-border: 240 20% 90% / 0.5;
+    --glass: 36 40% 98% / 0.65;
+    --glass-border: 100 15% 75% / 0.45;
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-bg: radial-gradient(ellipse at top, hsl(168 80% 95%), hsl(240 20% 98%));
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.45), 0 0 80px hsl(var(--primary-glow) / 0.25);
-    --shadow-float: 0 10px 30px -10px hsl(240 30% 20% / 0.15), 0 4px 12px -4px hsl(240 30% 20% / 0.08);
+    --gradient-bg: radial-gradient(ellipse at top, hsl(96 30% 90%), hsl(36 36% 95%));
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.30), 0 0 80px hsl(var(--primary-glow) / 0.20);
+    --shadow-float: 0 10px 30px -10px hsl(100 25% 20% / 0.14), 0 4px 12px -4px hsl(100 25% 20% / 0.08);
   }
 
   .dark {
