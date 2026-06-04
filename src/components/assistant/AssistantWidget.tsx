@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Sparkles } from "lucide-react";
+import { X, Send, Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,15 @@ const WELCOME: Msg = {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assistant-chat`;
 
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "textarea:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
+
 export const AssistantWidget = () => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -28,14 +37,67 @@ export const AssistantWidget = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  const lastAssistantText = messages.filter((m) => m.role === "assistant").pop()?.content ?? "";
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
+  /* ── open: store previous focus & move focus into dialog ── */
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 200);
+    if (!open) return;
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 250);
+    return () => clearTimeout(timer);
   }, [open]);
+
+  /* ── close: restore previous focus ── */
+  useEffect(() => {
+    if (open) return;
+    previousFocusRef.current?.focus?.();
+  }, [open]);
+
+  /* ── focus trap + Escape ── */
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusables = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+        (el) => !el.hasAttribute("disabled") && el.offsetParent !== null,
+      );
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+
+      if (e.shiftKey) {
+        if (active === first || !dialog.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last || !dialog.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [],
+  );
 
   const send = async (text: string) => {
     const trimmed = text.trim();
@@ -121,6 +183,11 @@ export const AssistantWidget = () => {
 
   return (
     <>
+      {/* sr-only live region for streaming announcements */}
+      <div aria-live="polite" aria-atomic="false" className="sr-only">
+        {lastAssistantText}
+      </div>
+
       {/* FAB */}
       <motion.button
         initial={{ scale: 0, opacity: 0 }}
@@ -153,12 +220,15 @@ export const AssistantWidget = () => {
               className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             />
             <motion.div
+              ref={dialogRef}
               initial={{ y: "100%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0 }}
               transition={{ type: "spring", stiffness: 280, damping: 30 }}
               role="dialog"
+              aria-modal="true"
               aria-label="Assistant Vita"
+              onKeyDown={handleKeyDown}
               className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-w-md flex-col rounded-t-[2rem] glass shadow-float"
               style={{ height: "min(82vh, 720px)" }}
             >
@@ -181,7 +251,12 @@ export const AssistantWidget = () => {
               </div>
 
               {/* Messages */}
-              <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+              <div
+                ref={scrollRef}
+                aria-live="off"
+                aria-busy={loading}
+                className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
+              >
                 {messages.map((m, i) => (
                   <div
                     key={i}
@@ -234,10 +309,11 @@ export const AssistantWidget = () => {
 
                 {/* Suggestions */}
                 {messages.length === 1 && !loading && (
-                  <div className="flex flex-wrap gap-2 pt-2">
+                  <div className="flex flex-wrap gap-2 pt-2" role="list" aria-label="Suggestions">
                     {SUGGESTIONS.map((s) => (
                       <button
                         key={s}
+                        role="listitem"
                         onClick={() => send(s)}
                         className="rounded-full border border-border/60 bg-background/40 px-3 py-1.5 text-[11px] font-medium hover:bg-accent/10 transition-colors"
                       >
