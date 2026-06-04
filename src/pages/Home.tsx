@@ -35,23 +35,36 @@ const Home = () => {
 
   return (
     <AppShell>
-      <motion.div
+      <motion.section
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="pt-2"
       >
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Flash · Around you
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-primary/80">
+          Flash · autour de vous
         </p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-          Best for you, now
+        <h1 className="mt-2 text-[28px] leading-tight font-semibold tracking-tight text-foreground">
+          Le meilleur, <span className="italic font-normal text-primary">maintenant</span>
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground max-w-[28ch]">
+          Classé selon votre indice vital et les offres en cours.
+        </p>
+      </motion.section>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+        className="mt-7 flex items-center justify-between"
+      >
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {loading ? "Recherche…" : `${items.length} adresses`}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Ranked by indice vital and live deals.
-        </p>
+        <span className="h-px flex-1 ml-3 bg-gradient-to-r from-border to-transparent" />
       </motion.div>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-4 space-y-3 pb-4">
         {loading ? (
           <>
             <FlashCardSkeleton large />
