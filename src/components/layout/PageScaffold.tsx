@@ -1,7 +1,68 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+interface SkeletonProps {
+  className?: string;
+}
+
+export const Skeleton = ({ className }: SkeletonProps) => (
+  <div
+    className={cn(
+      "relative overflow-hidden rounded-2xl bg-muted/70",
+      "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.6s_infinite]",
+      "before:bg-gradient-to-r before:from-transparent before:via-background/60 before:to-transparent",
+      className,
+    )}
+  />
+);
+
+interface ErrorStateProps {
+  title?: string;
+  description?: string;
+  onRetry?: () => void;
+  className?: string;
+}
+
+export const ErrorState = ({
+  title = "Une erreur est survenue",
+  description = "Impossible de charger les données. Veuillez réessayer.",
+  onRetry,
+  className,
+}: ErrorStateProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, ease: "easeOut" }}
+    className={cn(
+      "flex flex-col items-center justify-center gap-3 rounded-3xl glass shadow-float px-6 py-10 text-center",
+      className,
+    )}
+    role="alert"
+  >
+    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
+      <AlertTriangle className="h-5 w-5" />
+    </div>
+    <div className="space-y-1">
+      <p className="text-sm font-semibold tracking-tight">{title}</p>
+      <p className="mx-auto max-w-[32ch] text-xs leading-relaxed text-muted-foreground">
+        {description}
+      </p>
+    </div>
+    {onRetry && (
+      <Button
+        onClick={onRetry}
+        size="sm"
+        className="mt-1 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow"
+      >
+        <RefreshCw className="mr-1 h-3.5 w-3.5" /> Réessayer
+      </Button>
+    )}
+  </motion.div>
+);
+
 
 interface PageHeaderProps {
   eyebrow?: string;
