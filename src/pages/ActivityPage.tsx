@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Activity, Sparkles, MapPin, QrCode } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import {
   PageHeader,
   SectionLabel,
-  LoadingState,
   EmptyState,
+  ErrorState,
 } from "@/components/layout/PageScaffold";
+import { ListRowSkeleton } from "@/components/layout/Skeletons";
 
 type Item = {
   id: number;
@@ -27,14 +28,19 @@ const MOCK: Item[] = [
 const ActivityPage = () => {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(null);
     const t = setTimeout(() => {
       setItems(MOCK);
       setLoading(false);
-    }, 600);
+    }, 700);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => load(), [load]);
 
   return (
     <AppShell>
@@ -48,11 +54,24 @@ const ActivityPage = () => {
         subtitle="Tout ce que vous avez exploré, scanné ou enregistré récemment."
       />
 
-      <SectionLabel label={loading ? "Recherche…" : `${items.length} événements`} />
+      <SectionLabel
+        label={loading ? "Recherche…" : error ? "Erreur" : `${items.length} événements`}
+      />
 
       <div className="mt-4 space-y-3 pb-4">
         {loading ? (
-          <LoadingState label="Chargement de votre activité…" />
+          <>
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+            <ListRowSkeleton />
+          </>
+        ) : error ? (
+          <ErrorState
+            title="Activité indisponible"
+            description="Nous n'avons pas pu récupérer votre journal. Réessayez."
+            onRetry={load}
+          />
         ) : items.length === 0 ? (
           <EmptyState
             icon={<Activity className="h-5 w-5" />}
