@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { FlashCard, FlashItem } from "@/components/flash/FlashCard";
 import { FlashCardSkeleton } from "@/components/flash/FlashCardSkeleton";
-import { motion } from "framer-motion";
+import { PageHeader, SectionLabel } from "@/components/layout/PageScaffold";
 
 const MOCK: FlashItem[] = [
   {
