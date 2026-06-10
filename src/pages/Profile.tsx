@@ -31,6 +31,9 @@ import { NotificationPreferences } from "@/components/profile/NotificationPrefer
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { BoitesCard } from "@/components/profile/BoitesCard";
 import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { ErrorState } from "@/components/layout/PageScaffold";
+import { ProfileSkeleton } from "@/components/layout/Skeletons";
 
 const stats = [
   { label: "Streak", value: "12j", icon: TrendingUp },
@@ -78,6 +81,42 @@ const settings = [
 
 const Profile = () => {
   const { profile } = useProfile();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(null);
+    const t = setTimeout(() => setLoading(false), 650);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => load(), [load]);
+
+  if (loading) {
+    return (
+      <AppShell>
+        <div className="pt-2">
+          <ProfileSkeleton />
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (error) {
+    return (
+      <AppShell>
+        <div className="pt-6">
+          <ErrorState
+            title="Profil indisponible"
+            description="Impossible de charger vos informations. Veuillez réessayer."
+            onRetry={load}
+          />
+        </div>
+      </AppShell>
+    );
+  }
+
   const xpPct = Math.round((profile.xp / 1000) * 100);
   return (
   <AppShell>
