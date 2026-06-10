@@ -1,18 +1,90 @@
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Activity, Sparkles, MapPin, QrCode } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import {
+  PageHeader,
+  SectionLabel,
+  LoadingState,
+  EmptyState,
+} from "@/components/layout/PageScaffold";
 
-const ActivityPage = () => (
-  <AppShell>
-    <h2 className="text-3xl font-semibold tracking-tight">Activity</h2>
-    <p className="mt-2 text-muted-foreground">Your recent moves.</p>
-    <ul className="mt-6 space-y-3">
-      {[1, 2, 3, 4].map((i) => (
-        <li key={i} className="rounded-2xl glass shadow-float p-4">
-          <p className="text-sm font-medium">Activity {i}</p>
-          <p className="text-xs text-muted-foreground">Just now</p>
-        </li>
-      ))}
-    </ul>
-  </AppShell>
-);
+type Item = {
+  id: number;
+  icon: typeof Activity;
+  title: string;
+  hint: string;
+  time: string;
+};
+
+const MOCK: Item[] = [
+  { id: 1, icon: Sparkles, title: "Flash trouvé · Maison Verte", hint: "Indice vital 94", time: "Il y a 2 min" },
+  { id: 2, icon: QrCode, title: "QR scanné · Atelier Grain", hint: "Espace ajouté", time: "Il y a 1 h" },
+  { id: 3, icon: MapPin, title: "Nouvelle zone explorée", hint: "Quartier latin", time: "Hier" },
+  { id: 4, icon: Activity, title: "Streak +1", hint: "12 jours d'affilée", time: "Hier" },
+];
+
+const ActivityPage = () => {
+  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<Item[]>([]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setItems(MOCK);
+      setLoading(false);
+    }, 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <AppShell>
+      <PageHeader
+        eyebrow="Activité · journal"
+        title={
+          <>
+            Vos derniers <span className="italic font-normal text-primary">mouvements</span>
+          </>
+        }
+        subtitle="Tout ce que vous avez exploré, scanné ou enregistré récemment."
+      />
+
+      <SectionLabel label={loading ? "Recherche…" : `${items.length} événements`} />
+
+      <div className="mt-4 space-y-3 pb-4">
+        {loading ? (
+          <LoadingState label="Chargement de votre activité…" />
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={<Activity className="h-5 w-5" />}
+            title="Aucune activité"
+            description="Vos scans, découvertes et flashs apparaîtront ici."
+          />
+        ) : (
+          items.map((it, i) => {
+            const Icon = it.icon;
+            return (
+              <motion.article
+                key={it.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.06, ease: [0.4, 0, 0.2, 1] }}
+                className="flex items-center gap-3 rounded-2xl glass shadow-float p-4"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{it.title}</p>
+                  <p className="text-[11px] text-muted-foreground">{it.hint}</p>
+                </div>
+                <span className="shrink-0 text-[10px] text-muted-foreground">{it.time}</span>
+              </motion.article>
+            );
+          })
+        )}
+      </div>
+    </AppShell>
+  );
+};
 
 export default ActivityPage;

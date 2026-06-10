@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { FlashCard, FlashItem } from "@/components/flash/FlashCard";
 import { FlashCardSkeleton } from "@/components/flash/FlashCardSkeleton";
-import { motion } from "framer-motion";
+import { PageHeader, SectionLabel } from "@/components/layout/PageScaffold";
 
 const MOCK: FlashItem[] = [
   {
@@ -35,34 +35,17 @@ const Home = () => {
 
   return (
     <AppShell>
-      <motion.section
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="pt-2"
-      >
-        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-primary/80">
-          Flash · autour de vous
-        </p>
-        <h1 className="mt-2 text-[28px] leading-tight font-semibold tracking-tight text-foreground">
-          Le meilleur, <span className="italic font-normal text-primary">maintenant</span>
-        </h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground max-w-[28ch]">
-          Classé selon votre indice vital et les offres en cours.
-        </p>
-      </motion.section>
+      <PageHeader
+        eyebrow="Flash · autour de vous"
+        title={
+          <>
+            Le meilleur, <span className="italic font-normal text-primary">maintenant</span>
+          </>
+        }
+        subtitle="Classé selon votre indice vital et les offres en cours."
+      />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.15 }}
-        className="mt-7 flex items-center justify-between"
-      >
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {loading ? "Recherche…" : `${items.length} adresses`}
-        </h2>
-        <span className="h-px flex-1 ml-3 bg-gradient-to-r from-border to-transparent" />
-      </motion.div>
+      <SectionLabel label={loading ? "Recherche…" : `${items.length} adresses`} />
 
       <div className="mt-4 space-y-3 pb-4">
         {loading ? (

@@ -1,11 +1,97 @@
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { MapPin, Compass, Navigation2 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import {
+  PageHeader,
+  SectionLabel,
+  LoadingState,
+  EmptyState,
+} from "@/components/layout/PageScaffold";
+import { Button } from "@/components/ui/button";
 
-const MapPage = () => (
-  <AppShell>
-    <h2 className="text-3xl font-semibold tracking-tight">Map</h2>
-    <p className="mt-2 text-muted-foreground">Discover places around you.</p>
-    <div className="mt-6 h-[60vh] rounded-3xl glass shadow-float" />
-  </AppShell>
-);
+const MapPage = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <AppShell>
+      <PageHeader
+        eyebrow="Zone · autour de vous"
+        title={
+          <>
+            La carte, <span className="italic font-normal text-primary">vivante</span>
+          </>
+        }
+        subtitle="Visualisez les adresses Flash et les espaces partenaires à proximité."
+      />
+
+      <SectionLabel label={loading ? "Localisation…" : "Carte"} />
+
+      <div className="mt-4 pb-4">
+        {loading ? (
+          <LoadingState label="Préparation de la carte…" className="h-[55vh]" />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="relative h-[55vh] overflow-hidden rounded-3xl glass shadow-float"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-60"
+              style={{
+                background:
+                  "radial-gradient(ellipse at 30% 20%, hsl(var(--primary-glow)/0.30), transparent 60%), radial-gradient(ellipse at 80% 70%, hsl(var(--accent)/0.40), transparent 55%)",
+              }}
+            />
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  "linear-gradient(hsl(var(--border)/0.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)/0.5) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold">Vous êtes ici</p>
+                <p className="text-[11px] text-muted-foreground">12 adresses à proximité</p>
+              </div>
+              <Button
+                size="sm"
+                className="mt-2 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow"
+              >
+                <Navigation2 className="mr-1 h-3.5 w-3.5" /> Me localiser
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      {!loading && (
+        <>
+          <SectionLabel label="Filtres" />
+          <div className="mt-4">
+            <EmptyState
+              icon={<Compass className="h-5 w-5" />}
+              title="Aucun filtre actif"
+              description="Choisissez une catégorie pour affiner les lieux affichés sur la carte."
+            />
+          </div>
+        </>
+      )}
+    </AppShell>
+  );
+};
 
 export default MapPage;
