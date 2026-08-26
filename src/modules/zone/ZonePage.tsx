@@ -84,8 +84,10 @@ const ZonePage = () => {
           <ErrorState title="Zones indisponibles" description={error} onRetry={reload} />
         </div>
       ) : loading ? (
-        <div className="mt-6">
-          <ListSkeleton count={4} />
+        <div className="mt-6 space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ListRowSkeleton key={i} />
+          ))}
         </div>
       ) : (
         <>
