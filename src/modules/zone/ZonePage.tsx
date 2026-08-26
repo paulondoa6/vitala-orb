@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronRight, Flame, MapPin, Sparkles, Users, Zap } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { ErrorState, PageHeader, SectionLabel } from "@/components/layout/PageScaffold";
-import { ListSkeleton } from "@/components/layout/Skeletons";
+import { ListRowSkeleton } from "@/components/layout/Skeletons";
 import { activityLabel, type ZonePulse } from "./api";
 import { useZonePulses } from "./hooks";
 
@@ -84,8 +84,10 @@ const ZonePage = () => {
           <ErrorState title="Zones indisponibles" description={error} onRetry={reload} />
         </div>
       ) : loading ? (
-        <div className="mt-6">
-          <ListSkeleton count={4} />
+        <div className="mt-6 space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ListRowSkeleton key={i} />
+          ))}
         </div>
       ) : (
         <>
