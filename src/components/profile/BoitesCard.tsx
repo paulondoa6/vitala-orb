@@ -11,8 +11,9 @@ export const BoitesCard = () => {
     (async () => {
       try {
         const owned = await listBoitesByOwner(getCurrentOwnerId());
-        if (cancelled) return;
+        if (!cancelled) setBoites(owned);
       } catch {
+        if (!cancelled) setBoites([]);
       }
     })();
     return () => {
