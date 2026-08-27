@@ -3,6 +3,7 @@ import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { TabTransition } from "./TabTransition";
 import { AssistantWidget } from "@/components/assistant/AssistantWidget";
+import { IdentityGate } from "@/core/IdentityGate";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   return (
@@ -13,6 +14,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       </main>
       <BottomNav />
       <AssistantWidget />
+      <IdentityGate />
     </div>
   );
 };
