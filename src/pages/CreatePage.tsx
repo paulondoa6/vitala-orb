@@ -40,7 +40,7 @@ import {
   NAME_REQUIRED_TYPES,
   type SpaceType,
 } from "@/lib/spaceStore";
-import { createBoite, type Service, type Member, type MemberRole } from "@/lib/boiteStore";
+import { createBoite, type Service, type Member, type MemberRole } from "@/modules/espace/api";
 import { useToast } from "@/hooks/use-toast";
 
 type TypeOption = { id: SpaceType; label: string; hint: string; icon: LucideIcon };

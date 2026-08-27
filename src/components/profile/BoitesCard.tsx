@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { LayoutGrid, ChevronRight, Plus, Sparkles } from "lucide-react";
-import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/lib/boiteStore";
-import { MOCK_BOITES } from "@/lib/boiteMocks";
+import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espace/api";
 
 export const BoitesCard = () => {
   const [boites, setBoites] = useState<Boite[] | null>(null);
@@ -12,10 +11,9 @@ export const BoitesCard = () => {
     (async () => {
       try {
         const owned = await listBoitesByOwner(getCurrentOwnerId());
-        if (cancelled) return;
-        setBoites(owned.length > 0 ? owned : MOCK_BOITES);
+        if (!cancelled) setBoites(owned);
       } catch {
-        if (!cancelled) setBoites(MOCK_BOITES);
+        if (!cancelled) setBoites([]);
       }
     })();
     return () => {

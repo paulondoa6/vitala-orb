@@ -5,10 +5,10 @@ import { NavItem } from "./NavItem";
 import { ScanButton } from "./ScanButton";
 
 const items = [
-  { to: "/", icon: Zap, label: "Flash" },
-  { to: "/map", icon: MapPin, label: "Zone" },
+  { to: "/flash", icon: Zap, label: "Flash" },
+  { to: "/zone", icon: MapPin, label: "Zone" },
 ];
-const itemsRight = [{ to: "/create", icon: LayoutGrid, label: "Espace" }];
+const itemsRight = [{ to: "/espace", icon: LayoutGrid, label: "Espace" }];
 
 export const BottomNav = () => {
   const { pathname } = useLocation();
