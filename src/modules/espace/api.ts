@@ -60,7 +60,7 @@ export const createBoite = async (
   if (!persisted) throw new Error("L'enregistrement n'a pas pu être confirmé");
 
   onProgress?.({ key: "done", label: "Ton espace est prêt !", progress: 100 });
-  emit({ type: "espace:created" });
+  emit({ type: "espace:created", uuid });
   return persisted;
 };
 

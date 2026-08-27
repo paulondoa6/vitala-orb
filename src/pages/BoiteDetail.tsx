@@ -26,7 +26,7 @@ import {
   generateShareLink,
   isValidBoiteUuid,
   type Boite,
-} from "@/lib/boiteStore";
+} from "@/modules/espace/api";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
