@@ -1,22 +1,23 @@
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LoadingState } from "@/components/layout/PageScaffold";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import Home from "./pages/Home";
 
-const FlashPage = lazy(() => import("./modules/flash/FlashPage"));
-const ZonePage = lazy(() => import("./modules/zone/ZonePage"));
-const ZoneDetail = lazy(() => import("./modules/zone/ZoneDetail"));
-const ScanPage = lazy(() => import("./modules/scan/ScanPage"));
-const CreatePage = lazy(() => import("./pages/CreatePage"));
-const BoiteDetail = lazy(() => import("./pages/BoiteDetail"));
-const Profile = lazy(() => import("./pages/Profile"));
-const EditProfile = lazy(() => import("./pages/EditProfile"));
-const Settings = lazy(() => import("./pages/Settings"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+const FlashPage = lazyWithRetry(() => import("./modules/flash/FlashPage"));
+const ZonePage = lazyWithRetry(() => import("./modules/zone/ZonePage"));
+const ZoneDetail = lazyWithRetry(() => import("./modules/zone/ZoneDetail"));
+const ScanPage = lazyWithRetry(() => import("./modules/scan/ScanPage"));
+const CreatePage = lazyWithRetry(() => import("./pages/CreatePage"));
+const BoiteDetail = lazyWithRetry(() => import("./pages/BoiteDetail"));
+const Profile = lazyWithRetry(() => import("./pages/Profile"));
+const EditProfile = lazyWithRetry(() => import("./pages/EditProfile"));
+const Settings = lazyWithRetry(() => import("./pages/Settings"));
+const NotFound = lazyWithRetry(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
