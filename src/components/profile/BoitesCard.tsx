@@ -1,25 +1,51 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { LayoutGrid, ChevronRight, Plus, Sparkles } from "lucide-react";
+import { LayoutGrid, ChevronRight, Plus, RefreshCw, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espace/api";
 
 export const BoitesCard = () => {
   const [boites, setBoites] = useState<Boite[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  const load = useCallback(async () => {
+    setFailed(false);
+    try {
+      const owned = await listBoitesByOwner(getCurrentOwnerId());
+      setBoites(owned);
+    } catch {
+      setBoites(null);
+      setFailed(true);
+      toast.error("Tes Espaces n'ont pas pu être chargés", {
+        description: "Vérifie ta connexion, puis réessaie.",
+        action: { label: "Réessayer", onClick: () => void load() },
+      });
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const owned = await listBoitesByOwner(getCurrentOwnerId());
-        if (!cancelled) setBoites(owned);
-      } catch {
-        if (!cancelled) setBoites([]);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    void load();
+  }, [load]);
+
+  if (failed) {
+    return (
+      <section className="mt-6">
+        <div className="glass shadow-float flex items-center gap-3 rounded-2xl px-4 py-3">
+          <div className="flex-1">
+            <p className="text-sm font-semibold">Mes Espaces</p>
+            <p className="text-[11px] text-muted-foreground">Chargement impossible pour le moment.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => void load()}
+            className="inline-flex items-center gap-1 rounded-xl bg-primary/10 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <RefreshCw className="h-3.5 w-3.5" /> Réessayer
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   if (!boites) return null;
 
