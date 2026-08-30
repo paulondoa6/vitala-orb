@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
 import { db } from "@/core/db";
 import { ensureSeeded } from "@/core/seed";
 import { getPosition } from "@/core/permissions";
 import { useIdentity } from "@/core/identity";
+import { track } from "@/core/analytics";
 import { runScan, type ScanConfig, type ScanResult } from "./engine";
 
 export type ScanPhase = "idle" | "scanning" | "done";
@@ -41,6 +43,9 @@ export const useScanRunner = () => {
       setProgress(0);
       setResults([]);
       setError(null);
+      const startedAt = Date.now();
+      track({ name: "scan_started", mode: config.mode, radiusM: config.radiusM });
+
 
       const steps = stepsFor(config);
       steps.forEach((s, i) => {
@@ -88,12 +93,25 @@ export const useScanRunner = () => {
                 : `${found.length} résultat${found.length > 1 ? "s" : ""} classés`,
             );
             setPhase("done");
+            track({
+              name: "scan_completed",
+              mode: config.mode,
+              results: found.length,
+              durationMs: Date.now() - startedAt,
+            });
           }, 900 + found.length * 160),
         );
-      } catch {
+      } catch (e) {
         clear();
-        setError("Le scan s'est interrompu. Réessaie dans un instant.");
+        const message = "Le scan s'est interrompu. Réessaie dans un instant.";
+        setError(message);
         setPhase("idle");
+        track({
+          name: "scan_failed",
+          mode: config.mode,
+          reason: e instanceof Error ? e.message : "unknown",
+        });
+        toast.error("Scan interrompu", { description: message });
       }
     },
     [identity?.interests],

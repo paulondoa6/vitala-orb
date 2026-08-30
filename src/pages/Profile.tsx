@@ -30,6 +30,7 @@ import { useProfile } from "@/lib/profileStore";
 import { NotificationPreferences } from "@/components/profile/NotificationPreferences";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { BoitesCard } from "@/components/profile/BoitesCard";
+import { IdentityCard } from "@/components/profile/IdentityCard";
 import { Link } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { ErrorState } from "@/components/layout/PageScaffold";
@@ -121,57 +122,21 @@ const Profile = () => {
   return (
   <AppShell>
     {/* Header / Identity */}
-    <section className="relative overflow-hidden rounded-3xl glass shadow-float p-5">
-      <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-primary opacity-20 blur-3xl" />
-      <EditProfileModal>
-        <button
-          aria-label="Modifier le profil"
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-xl bg-background/60 backdrop-blur border border-border/60 hover:bg-background/80 transition-colors"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-      </EditProfileModal>
-      <div className="relative flex items-center gap-4">
-        <div className="relative">
-          <Avatar className="h-20 w-20 ring-4 ring-background shadow-glow">
-            <AvatarImage src={profile.avatar} alt="Avatar" />
-            <AvatarFallback className="bg-gradient-primary text-2xl text-primary-foreground">V</AvatarFallback>
-          </Avatar>
-          <span className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground shadow-glow">
-            <BadgeCheck className="h-4 w-4" />
-          </span>
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h2 className="truncate text-xl font-semibold tracking-tight">{profile.name}</h2>
-            <Badge className="bg-gradient-primary text-primary-foreground border-transparent">
-              <Crown className="mr-1 h-3 w-3" /> Pro
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground">Membre depuis 2026 · {profile.location}</p>
-          <div className="mt-2 flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className={`h-3.5 w-3.5 ${i < 5 ? "fill-primary text-primary" : "text-muted"}`} />
-            ))}
-            <span className="ml-1 text-xs text-muted-foreground">4.9 · 128 avis</span>
-          </div>
-        </div>
-      </div>
+    <IdentityCard />
 
-      {/* Vital level */}
-      <div className="relative mt-5">
-        <div className="mb-1.5 flex items-center justify-between text-xs">
-          <span className="font-medium text-foreground">Niveau Vital · {profile.level}</span>
-          <span className="text-muted-foreground">{profile.xp} / 1000 XP</span>
-        </div>
-        <Progress value={xpPct} className="h-2" />
-        <Link
-          to="/profile/edit"
-          className="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
-        >
-          <Pencil className="h-3 w-3" /> Modifier mes informations
-        </Link>
+    {/* Vital level */}
+    <section className="mt-4 rounded-3xl glass shadow-float p-5">
+      <div className="mb-1.5 flex items-center justify-between text-xs">
+        <span className="font-medium text-foreground">Niveau Vital · {profile.level}</span>
+        <span className="text-muted-foreground">{profile.xp} / 1000 XP</span>
       </div>
+      <Progress value={xpPct} className="h-2" />
+      <Link
+        to="/profile/edit"
+        className="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+      >
+        <Pencil className="h-3 w-3" /> Modifier mes informations
+      </Link>
     </section>
 
     {/* Stats */}
