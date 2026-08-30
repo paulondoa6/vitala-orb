@@ -93,12 +93,25 @@ export const useScanRunner = () => {
                 : `${found.length} résultat${found.length > 1 ? "s" : ""} classés`,
             );
             setPhase("done");
+            track({
+              name: "scan_completed",
+              mode: config.mode,
+              results: found.length,
+              durationMs: Date.now() - startedAt,
+            });
           }, 900 + found.length * 160),
         );
-      } catch {
+      } catch (e) {
         clear();
-        setError("Le scan s'est interrompu. Réessaie dans un instant.");
+        const message = "Le scan s'est interrompu. Réessaie dans un instant.";
+        setError(message);
         setPhase("idle");
+        track({
+          name: "scan_failed",
+          mode: config.mode,
+          reason: e instanceof Error ? e.message : "unknown",
+        });
+        toast.error("Scan interrompu", { description: message });
       }
     },
     [identity?.interests],
