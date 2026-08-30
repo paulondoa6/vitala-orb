@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
 import { db } from "@/core/db";
 import { ensureSeeded } from "@/core/seed";
 import { getPosition } from "@/core/permissions";
 import { useIdentity } from "@/core/identity";
+import { track } from "@/core/analytics";
 import { runScan, type ScanConfig, type ScanResult } from "./engine";
 
 export type ScanPhase = "idle" | "scanning" | "done";
@@ -41,6 +43,9 @@ export const useScanRunner = () => {
       setProgress(0);
       setResults([]);
       setError(null);
+      const startedAt = Date.now();
+      track({ name: "scan_started", mode: config.mode, radiusM: config.radiusM });
+
 
       const steps = stepsFor(config);
       steps.forEach((s, i) => {
