@@ -1,6 +1,6 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { EmptyState, ErrorState, PageHeader, SectionLabel } from "@/components/layout/PageScaffold";
-import { FlashCardSkeleton } from "@/components/flash/FlashCardSkeleton";
+import { FlashCardSkeleton } from "./components/FlashCardSkeleton";
 import { Zap } from "lucide-react";
 import { toast } from "sonner";
 import { closeFlash } from "./api";
