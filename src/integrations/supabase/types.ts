@@ -44,6 +44,13 @@ export type Database = {
             referencedRelation: "espaces"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "espace_members_espace_id_fkey"
+            columns: ["espace_id"]
+            isOneToOne: false
+            referencedRelation: "v_espace_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       espace_services: {
@@ -83,6 +90,13 @@ export type Database = {
             columns: ["espace_id"]
             isOneToOne: false
             referencedRelation: "espaces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "espace_services_espace_id_fkey"
+            columns: ["espace_id"]
+            isOneToOne: false
+            referencedRelation: "v_espace_public"
             referencedColumns: ["id"]
           },
         ]
@@ -165,6 +179,13 @@ export type Database = {
             referencedRelation: "flashes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "flash_replies_flash_id_fkey"
+            columns: ["flash_id"]
+            isOneToOne: false
+            referencedRelation: "v_flash_feed"
+            referencedColumns: ["id"]
+          },
         ]
       }
       flashes: {
@@ -211,6 +232,13 @@ export type Database = {
           zone_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "flashes_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "v_zone_list"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "flashes_zone_id_fkey"
             columns: ["zone_id"]
@@ -336,6 +364,13 @@ export type Database = {
             foreignKeyName: "radar_watches_zone_id_fkey"
             columns: ["zone_id"]
             isOneToOne: false
+            referencedRelation: "v_zone_list"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "radar_watches_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
             referencedRelation: "zones"
             referencedColumns: ["id"]
           },
@@ -361,6 +396,13 @@ export type Database = {
           zone_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "zone_members_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "v_zone_list"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "zone_members_zone_id_fkey"
             columns: ["zone_id"]
@@ -414,7 +456,131 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_espace_public: {
+        Row: {
+          city: string | null
+          description: string | null
+          id: string | null
+          lat: number | null
+          lng: number | null
+          name: string | null
+          public_code: string | null
+          service_count: number | null
+          type: string | null
+        }
+        Insert: {
+          city?: string | null
+          description?: string | null
+          id?: string | null
+          lat?: number | null
+          lng?: number | null
+          name?: string | null
+          public_code?: string | null
+          service_count?: never
+          type?: string | null
+        }
+        Update: {
+          city?: string | null
+          description?: string | null
+          id?: string | null
+          lat?: number | null
+          lng?: number | null
+          name?: string | null
+          public_code?: string | null
+          service_count?: never
+          type?: string | null
+        }
+        Relationships: []
+      }
+      v_flash_feed: {
+        Row: {
+          author_avatar_url: string | null
+          author_first_name: string | null
+          author_id: string | null
+          body: string | null
+          category: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string | null
+          lat: number | null
+          lng: number | null
+          reply_count: number | null
+          zone_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashes_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "v_zone_list"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashes_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_profile_public: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          first_name: string | null
+          id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          first_name?: string | null
+          id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          first_name?: string | null
+          id?: string | null
+        }
+        Relationships: []
+      }
+      v_zone_list: {
+        Row: {
+          active_flash_count: number | null
+          city: string | null
+          id: string | null
+          lat: number | null
+          lng: number | null
+          member_count: number | null
+          name: string | null
+          pulse: number | null
+          radius_m: number | null
+        }
+        Insert: {
+          active_flash_count?: never
+          city?: string | null
+          id?: string | null
+          lat?: number | null
+          lng?: number | null
+          member_count?: never
+          name?: string | null
+          pulse?: number | null
+          radius_m?: number | null
+        }
+        Update: {
+          active_flash_count?: never
+          city?: string | null
+          id?: string | null
+          lat?: number | null
+          lng?: number | null
+          member_count?: never
+          name?: string | null
+          pulse?: number | null
+          radius_m?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
