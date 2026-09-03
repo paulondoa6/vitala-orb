@@ -2,7 +2,8 @@ import { db, type Flash, type FlashCategory, type FlashUrgency, type GeoPoint } 
 import { createId } from "@/core/ids";
 import { emit } from "@/core/events";
 import { ensureSeeded } from "@/core/seed";
-import { distanceM } from "@/core/geo";
+import { distanceM, formatDistance, timeAgo } from "@/core/geo";
+import { fetchFlashFeed } from "@/core/views";
 
 export const FLASH_CATEGORIES: { key: FlashCategory; label: string; emoji: string }[] = [
   { key: "service", label: "Un service", emoji: "🛠" },
@@ -86,4 +87,121 @@ const nearestZoneId = async (point: GeoPoint): Promise<string | undefined> => {
     if (!best || d < best.d) best = { id: zone.id, d };
   }
   return best && best.d < 25_000 ? best.id : undefined;
+};
+
+/* ------------------------------------------------------------------ */
+/* DTO d'écran — Phase 8 : le backend réel d'abord, le local en secours */
+/* ------------------------------------------------------------------ */
+
+export interface FlashCardDTO {
+  id: string;
+  text: string;
+  category: FlashCategory;
+  categoryLabel: string;
+  authorName: string;
+  ageLabel: string;
+  distanceLabel: string | null;
+  replies: number;
+  live: boolean;
+  expiresAt: number;
+  mine: boolean;
+}
+
+export interface FlashScreenDTO {
+  source: "remote" | "local";
+  mine: FlashCardDTO[];
+  around: FlashCardDTO[];
+}
+
+const asCategory = (value: string): FlashCategory =>
+  (FLASH_CATEGORIES.some((c) => c.key === value) ? value : "autre") as FlashCategory;
+
+const toCard = (
+  base: {
+    id: string;
+    text: string;
+    category: FlashCategory;
+    authorName: string;
+    createdAt: number;
+    expiresAt: number;
+    replies: number;
+    position?: GeoPoint | null;
+    mine: boolean;
+    closed?: boolean;
+  },
+  here?: GeoPoint | null,
+): FlashCardDTO => ({
+  id: base.id,
+  text: base.text,
+  category: base.category,
+  categoryLabel: categoryLabel(base.category),
+  authorName: base.authorName,
+  ageLabel: timeAgo(base.createdAt),
+  distanceLabel:
+    here && base.position ? formatDistance(distanceM(here, base.position)) : null,
+  replies: base.replies,
+  live: !base.closed && base.expiresAt > Date.now(),
+  expiresAt: base.expiresAt,
+  mine: base.mine,
+});
+
+/** Vue Flash : uniquement ce que l'écran Flash affiche (contrat `flash`). */
+export const getFlashScreen = async (
+  viewerId: string,
+  here?: GeoPoint | null,
+): Promise<FlashScreenDTO> => {
+  let cards: FlashCardDTO[] | null = null;
+  let source: "remote" | "local" = "local";
+
+  try {
+    const rows = await fetchFlashFeed();
+    if (rows.length > 0) {
+      source = "remote";
+      cards = rows.map((r) =>
+        toCard(
+          {
+            id: r.id,
+            text: r.body,
+            category: asCategory(r.category),
+            authorName: r.author_first_name ?? "Voisin",
+            createdAt: new Date(r.created_at).getTime(),
+            expiresAt: new Date(r.expires_at).getTime(),
+            replies: r.reply_count,
+            position: r.lat != null && r.lng != null ? { lat: r.lat, lng: r.lng } : null,
+            mine: r.author_id === viewerId,
+          },
+          here,
+        ),
+      );
+    }
+  } catch {
+    cards = null;
+  }
+
+  if (!cards) {
+    const local = await listFlashes();
+    cards = local.map((f) =>
+      toCard(
+        {
+          id: f.id,
+          text: f.text,
+          category: f.category,
+          authorName: f.authorName,
+          createdAt: f.createdAt,
+          expiresAt: f.expiresAt,
+          replies: f.replies,
+          position: f.position ?? null,
+          mine: f.authorId === viewerId,
+          closed: Boolean(f.closedAt),
+        },
+        here,
+      ),
+    );
+  }
+
+  return {
+    source,
+    mine: cards.filter((c) => c.mine && c.live),
+    around: cards.filter((c) => !c.mine && c.live),
+  };
 };
