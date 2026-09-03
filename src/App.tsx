@@ -17,6 +17,7 @@ const BoiteDetail = lazyWithRetry(() => import("./pages/BoiteDetail"));
 const Profile = lazyWithRetry(() => import("./pages/Profile"));
 const EditProfile = lazyWithRetry(() => import("./pages/EditProfile"));
 const Settings = lazyWithRetry(() => import("./pages/Settings"));
+const AuthPage = lazyWithRetry(() => import("./pages/Auth"));
 const NotFound = lazyWithRetry(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
