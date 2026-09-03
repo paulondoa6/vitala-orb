@@ -31,6 +31,7 @@ import { NotificationPreferences } from "@/components/profile/NotificationPrefer
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { BoitesCard } from "@/components/profile/BoitesCard";
 import { IdentityCard } from "@/components/profile/IdentityCard";
+import { AccountCard } from "@/components/profile/AccountCard";
 import { Link } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { ErrorState } from "@/components/layout/PageScaffold";
@@ -123,6 +124,8 @@ const Profile = () => {
   <AppShell>
     {/* Header / Identity */}
     <IdentityCard />
+
+    <AccountCard />
 
     {/* Vital level */}
     <section className="mt-4 rounded-3xl glass shadow-float p-5">
