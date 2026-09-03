@@ -31,7 +31,9 @@ const App = () => (
         <Suspense fallback={<LoadingState label="Un instant…" />}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="/flash" element={<FlashPage />} />
+
             <Route path="/zone" element={<ZonePage />} />
             <Route path="/zone/:zoneId" element={<ZoneDetail />} />
             <Route path="/scan" element={<ScanPage />} />
