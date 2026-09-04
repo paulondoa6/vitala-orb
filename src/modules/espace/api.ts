@@ -2,6 +2,7 @@ import { db, type Boite, type Service, type Member, type MemberRole, type SpaceT
 import { createPublicCode, isPublicCode } from "@/core/ids";
 import { emit } from "@/core/events";
 import { fetchPublicEspaces } from "@/core/views";
+import { enqueue } from "@/core/sync";
 
 export type { Boite, Service, Member, MemberRole, SpaceType };
 
@@ -59,6 +60,15 @@ export const createBoite = async (
   onProgress?.({ key: "verify", label: "Dernière vérification…", progress: 90 });
   const persisted = await db.boites.get(uuid);
   if (!persisted) throw new Error("L'enregistrement n'a pas pu être confirmé");
+
+  await enqueue("espace:create", uuid, {
+    publicCode: uuid,
+    name: persisted.name?.trim() || "Espace sans nom",
+    type: persisted.types[0] ?? "service",
+    city: persisted.location?.label ?? null,
+    lat: persisted.location?.lat ?? null,
+    lng: persisted.location?.lng ?? null,
+  });
 
   onProgress?.({ key: "done", label: "Ton espace est prêt !", progress: 100 });
   emit({ type: "espace:created", uuid });
