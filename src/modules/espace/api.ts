@@ -92,12 +92,10 @@ export interface EspaceScreenDTO {
 }
 
 const SPACE_TYPE_LABELS: Record<string, string> = {
-  entreprise: "Entreprise",
-  boutique: "Boutique",
-  organisation: "Organisation",
+  produits: "Produits",
+  trust: "Trust",
   marque: "Marque",
   service: "Service",
-  equipe: "Équipe",
 };
 
 export const spaceTypeLabel = (type: string) => SPACE_TYPE_LABELS[type] ?? "Espace";

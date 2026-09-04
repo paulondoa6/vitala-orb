@@ -3,12 +3,10 @@ import Dexie, { type Table } from "dexie";
 /** Local-first database. Single source of truth for the whole app. */
 
 export type SpaceType =
-  | "entreprise"
-  | "boutique"
-  | "organisation"
+  | "produits"
+  | "trust"
   | "marque"
-  | "service"
-  | "equipe";
+  | "service";
 
 export type MemberRole = "admin" | "moderator";
 
