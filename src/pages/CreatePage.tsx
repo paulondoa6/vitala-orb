@@ -46,17 +46,15 @@ import { useToast } from "@/hooks/use-toast";
 type TypeOption = { id: SpaceType; label: string; hint: string; icon: LucideIcon };
 
 const TYPE_OPTIONS: TypeOption[] = [
-  { id: "entreprise", label: "Entreprise", hint: "Société, SARL, SAS", icon: Building2 },
-  { id: "boutique", label: "Boutique", hint: "Magasin, e-shop", icon: Store },
-  { id: "organisation", label: "Organisation", hint: "Asso, ONG, club", icon: Users },
+  { id: "produits", label: "Produits", hint: "Articles, catalogue", icon: Package },
+  { id: "trust", label: "Trust", hint: "Confiance, garanties", icon: ShieldCheck },
   { id: "marque", label: "Marque", hint: "Identité, label", icon: BadgeCheck },
   { id: "service", label: "Service proposé", hint: "Offre, prestation", icon: Wrench },
-  { id: "equipe", label: "Équipe", hint: "Collectif, staff", icon: UserPlus },
 ];
 
 const schema = z
   .object({
-    types: z.array(z.enum(["entreprise", "boutique", "organisation", "marque", "service", "equipe"])).min(1, "Choisis au moins un type"),
+    types: z.array(z.enum(["produits", "trust", "marque", "service"])).min(1, "Choisis au moins un type"),
     name: z.string().trim().max(80).optional().or(z.literal("")),
     logo: z.string().optional(),
     locationLabel: z.string().trim().max(120).optional().or(z.literal("")),

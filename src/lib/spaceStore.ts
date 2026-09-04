@@ -1,6 +1,6 @@
 import { get, set, del, keys } from "idb-keyval";
 
-export type SpaceType = "entreprise" | "boutique" | "organisation" | "marque" | "service" | "equipe";
+export type SpaceType = "produits" | "trust" | "marque" | "service";
 
 export interface SpaceDraft {
   id: string;
@@ -27,4 +27,4 @@ export const fileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-export const NAME_REQUIRED_TYPES: SpaceType[] = ["entreprise", "boutique", "marque"];
+export const NAME_REQUIRED_TYPES: SpaceType[] = ["produits", "marque", "trust"];
