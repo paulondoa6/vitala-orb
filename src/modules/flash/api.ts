@@ -4,6 +4,8 @@ import { emit } from "@/core/events";
 import { ensureSeeded } from "@/core/seed";
 import { distanceM, formatDistance, timeAgo } from "@/core/geo";
 import { fetchFlashFeed } from "@/core/views";
+import { enqueue } from "@/core/sync";
+
 
 export const FLASH_CATEGORIES: { key: FlashCategory; label: string; emoji: string }[] = [
   { key: "service", label: "Un service", emoji: "🛠" },
