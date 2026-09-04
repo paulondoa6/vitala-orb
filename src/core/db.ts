@@ -95,12 +95,30 @@ export interface ZoneMembership {
   joinedAt: number;
 }
 
+/** File d'attente d'écritures — Phase 9 (offline-first). */
+export type OutboxKind = "flash:create" | "flash:close" | "espace:create";
+export type OutboxStatus = "pending" | "syncing" | "synced" | "failed";
+
+export interface OutboxItem {
+  id: string;
+  kind: OutboxKind;
+  /** Identifiant local de l'entité concernée (flash.id, boite.uuid…). */
+  refId: string;
+  payload: unknown;
+  status: OutboxStatus;
+  attempts: number;
+  lastError?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 class VitalioDB extends Dexie {
   boites!: Table<Boite, string>;
   identities!: Table<Identity, string>;
   flashes!: Table<Flash, string>;
   zones!: Table<Zone, string>;
   zoneMembers!: Table<ZoneMembership, string>;
+  outbox!: Table<OutboxItem, string>;
 
   constructor() {
     super("vitalio");
@@ -114,7 +132,11 @@ class VitalioDB extends Dexie {
       zones: "id, city",
       zoneMembers: "id, zoneId, identityId, [zoneId+identityId]",
     });
+    this.version(3).stores({
+      outbox: "id, status, kind, refId, createdAt",
+    });
   }
 }
 
 export const db = new VitalioDB();
+
