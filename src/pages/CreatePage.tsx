@@ -4,12 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Building2,
-  Store,
-  Users,
+  Package,
   BadgeCheck,
   Wrench,
   UserPlus,
+
   Upload,
   MapPin,
   Loader2,
