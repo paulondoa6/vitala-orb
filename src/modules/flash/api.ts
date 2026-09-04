@@ -4,6 +4,8 @@ import { emit } from "@/core/events";
 import { ensureSeeded } from "@/core/seed";
 import { distanceM, formatDistance, timeAgo } from "@/core/geo";
 import { fetchFlashFeed } from "@/core/views";
+import { enqueue } from "@/core/sync";
+
 
 export const FLASH_CATEGORIES: { key: FlashCategory; label: string; emoji: string }[] = [
   { key: "service", label: "Un service", emoji: "🛠" },
@@ -54,14 +56,23 @@ export const publishFlash = async (input: PublishFlashInput): Promise<Flash> => 
     replies: 0,
   };
   await db.flashes.put(flash);
+  await enqueue("flash:create", flash.id, {
+    body: flash.text,
+    category: flash.category,
+    expiresAt: flash.expiresAt,
+    lat: flash.position?.lat ?? null,
+    lng: flash.position?.lng ?? null,
+  });
   emit({ type: "flash:published", id: flash.id });
   return flash;
 };
 
 export const closeFlash = async (id: string) => {
   await db.flashes.update(id, { closedAt: Date.now() });
+  await enqueue("flash:close", id, { id });
   emit({ type: "flash:closed", id });
 };
+
 
 export const isLive = (flash: Flash, at = Date.now()) =>
   !flash.closedAt && flash.expiresAt > at;
