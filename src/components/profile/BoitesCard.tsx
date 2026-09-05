@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LayoutGrid, ChevronRight, Plus, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espace/api";
+import { SyncBadge } from "@/components/layout/SyncBadge";
 
 export const BoitesCard = () => {
   const [boites, setBoites] = useState<Boite[] | null>(null);
