@@ -90,7 +90,9 @@ export const BoitesCard = () => {
                     {b.types.length > 1 ? ` +${b.types.length - 1}` : ""}
                   </span>
                 </div>
+                <SyncBadge refId={b.uuid} className="mt-1" />
               </div>
+
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
           ))}
