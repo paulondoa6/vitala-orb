@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LayoutGrid, ChevronRight, Plus, RefreshCw, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espace/api";
+import { SyncBadge } from "@/components/layout/SyncBadge";
 
 export const BoitesCard = () => {
   const [boites, setBoites] = useState<Boite[] | null>(null);
@@ -89,7 +90,9 @@ export const BoitesCard = () => {
                     {b.types.length > 1 ? ` +${b.types.length - 1}` : ""}
                   </span>
                 </div>
+                <SyncBadge refId={b.uuid} className="mt-1" />
               </div>
+
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
           ))}

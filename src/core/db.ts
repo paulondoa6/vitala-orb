@@ -95,9 +95,9 @@ export interface ZoneMembership {
   joinedAt: number;
 }
 
-/** File d'attente d'écritures — Phase 9 (offline-first). */
+/** File d'attente d'écritures — Phase 9/10 (offline-first + conflits). */
 export type OutboxKind = "flash:create" | "flash:close" | "espace:create";
-export type OutboxStatus = "pending" | "syncing" | "synced" | "failed";
+export type OutboxStatus = "pending" | "syncing" | "synced" | "failed" | "conflict";
 
 export interface OutboxItem {
   id: string;
@@ -108,9 +108,14 @@ export interface OutboxItem {
   status: OutboxStatus;
   attempts: number;
   lastError?: string;
+  /** Horodatage de l'écriture locale (base de la stratégie de conflit). */
+  clientUpdatedAt: number;
+  /** Horodatage distant constaté au moment du rejeu, s'il y en a un. */
+  remoteUpdatedAt?: number;
   createdAt: number;
   updatedAt: number;
 }
+
 
 class VitalioDB extends Dexie {
   boites!: Table<Boite, string>;

@@ -4,6 +4,7 @@ import type { Flash } from "@/core/db";
 import { formatCountdown, timeAgo } from "@/core/geo";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { SyncBadge } from "@/components/layout/SyncBadge";
 import { FLASH_CATEGORIES } from "../api";
 
 interface Props {
@@ -49,7 +50,9 @@ export const FlashItemCard = ({ flash, index = 0, owned, onClose }: Props) => {
             <span aria-hidden>·</span>
             <span>{timeAgo(flash.createdAt)}</span>
           </div>
+          <SyncBadge refId={flash.id} className="mt-1.5" />
         </div>
+
 
         <div className="flex shrink-0 flex-col items-end gap-1.5">
           <span
