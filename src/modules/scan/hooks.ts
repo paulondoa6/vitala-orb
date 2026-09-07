@@ -100,6 +100,7 @@ export const useScanRunner = () => {
               results: found.length,
               durationMs: Date.now() - startedAt,
             });
+            saveLastScan({ at: Date.now(), results: found.length, mode: config.mode });
           }, 900 + found.length * 160),
         );
       } catch (e) {
