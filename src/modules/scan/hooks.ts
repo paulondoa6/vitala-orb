@@ -6,6 +6,7 @@ import { getPosition } from "@/core/permissions";
 import { useIdentity } from "@/core/identity";
 import { track } from "@/core/analytics";
 import { runScan, type ScanConfig, type ScanResult } from "./engine";
+import { saveLastScan } from "./lastScan";
 
 export type ScanPhase = "idle" | "scanning" | "done";
 
@@ -99,6 +100,7 @@ export const useScanRunner = () => {
               results: found.length,
               durationMs: Date.now() - startedAt,
             });
+            saveLastScan({ at: Date.now(), results: found.length, mode: config.mode });
           }, 900 + found.length * 160),
         );
       } catch (e) {
