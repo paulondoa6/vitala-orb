@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Zap, MapPin, Radar, LayoutGrid, ArrowRight, History } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { PageHeader, SectionLabel } from "@/components/layout/PageScaffold";
-import { Skeleton, ErrorState } from "@/components/layout/Skeletons";
+import { PageHeader, SectionLabel, Skeleton, ErrorState } from "@/components/layout/PageScaffold";
 import { useHomeScreen } from "@/modules/home/hooks";
 import type { HomeTileDTO } from "@/modules/home/api";
 
