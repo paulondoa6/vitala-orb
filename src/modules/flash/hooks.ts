@@ -45,15 +45,16 @@ export const useFlashFeed = () => {
   const groups = useMemo(() => {
     const live = flashes.filter((f) => isLive(f));
     const mine = live.filter((f) => f.authorId === identity?.id);
-    const others = live.filter((f) => f.authorId !== identity?.id);
-    return {
-      mine,
-      urgent: others.filter((f) => f.urgency === "urgent"),
-      around: others.filter((f) => f.urgency !== "urgent"),
-      popular: [...others].sort((a, b) => b.replies - a.replies).slice(0, 3),
-      liveCount: live.length,
-    };
+    // Contrat `flash` : deux sections seulement, l'urgence reste un badge de carte.
+    const around = live
+      .filter((f) => f.authorId !== identity?.id)
+      .sort((a, b) => {
+        const urgency = Number(b.urgency === "urgent") - Number(a.urgency === "urgent");
+        return urgency !== 0 ? urgency : b.createdAt - a.createdAt;
+      });
+    return { mine, around, liveCount: live.length };
   }, [flashes, identity?.id]);
+
 
   return { ...groups, loading, error, reload };
 };
