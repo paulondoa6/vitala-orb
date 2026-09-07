@@ -7,9 +7,9 @@ import { toast } from "sonner";
 import { ensureIdentity, useIdentity } from "@/core/identity";
 import { getPosition } from "@/core/permissions";
 import { FLASH_CATEGORIES, FLASH_DURATIONS, publishFlash } from "../api";
-import type { FlashCategory } from "@/core/db";
+import type { Flash, FlashCategory } from "@/core/db";
 
-export const FlashComposer = ({ onPublished }: { onPublished?: () => void }) => {
+export const FlashComposer = ({ onPublished }: { onPublished?: (flash: Flash) => void }) => {
   const { identity } = useIdentity();
   const [text, setText] = useState("");
   const [category, setCategory] = useState<FlashCategory>("service");
@@ -24,7 +24,7 @@ export const FlashComposer = ({ onPublished }: { onPublished?: () => void }) => 
     setBusy(true);
     try {
       const position = await getPosition();
-      await publishFlash({
+      const published = await publishFlash({
         text,
         category,
         durationMinutes: duration,
@@ -35,10 +35,7 @@ export const FlashComposer = ({ onPublished }: { onPublished?: () => void }) => 
       });
       setText("");
       setUrgent(false);
-      toast.success("Ton flash est en ligne", {
-        description: "On prévient les personnes autour de toi.",
-      });
-      onPublished?.();
+      onPublished?.(published);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Publication impossible");
     } finally {
