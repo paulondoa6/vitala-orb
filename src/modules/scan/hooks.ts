@@ -6,6 +6,7 @@ import { getPosition } from "@/core/permissions";
 import { useIdentity } from "@/core/identity";
 import { track } from "@/core/analytics";
 import { runScan, type ScanConfig, type ScanResult } from "./engine";
+import { saveLastScan } from "./lastScan";
 
 export type ScanPhase = "idle" | "scanning" | "done";
 
