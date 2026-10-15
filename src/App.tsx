@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 
 const FlashPage = lazyWithRetry(() => import("./modules/flash/FlashPage"));
 const FlashDetail = lazyWithRetry(() => import("./modules/flash/FlashDetail"));
+const RadarPage = lazyWithRetry(() => import("./modules/radar/RadarPage"));
 const ZonePage = lazyWithRetry(() => import("./modules/zone/ZonePage"));
 const ZoneDetail = lazyWithRetry(() => import("./modules/zone/ZoneDetail"));
 const ScanPage = lazyWithRetry(() => import("./modules/scan/ScanPage"));
@@ -38,6 +39,7 @@ const App = () => (
 
             <Route path="/zone" element={<ZonePage />} />
             <Route path="/zone/:zoneId" element={<ZoneDetail />} />
+            <Route path="/radar" element={<RadarPage />} />
             <Route path="/scan" element={<ScanPage />} />
             <Route path="/espace" element={<CreatePage />} />
             <Route path="/create" element={<CreatePage />} />

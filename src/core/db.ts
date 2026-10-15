@@ -105,7 +105,34 @@ export interface FlashReply {
 }
 
 /** File d'attente d'écritures — Phase 9/10 (offline-first + conflits). */
-export type OutboxKind = "flash:create" | "flash:close" | "espace:create";
+export type OutboxKind =
+  | "flash:create"
+  | "flash:close"
+  | "espace:create"
+  | "radar:watch:upsert"
+  | "radar:watch:delete"
+  | "radar:alert:read";
+
+/** Cache local du Radar (miroir des tables distantes). */
+export interface RadarWatch {
+  id: string;
+  label: string;
+  categories: string[];
+  radiusM: number;
+  zoneId: string | null;
+  active: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface RadarAlert {
+  id: string;
+  title: string;
+  sourceType: string;
+  sourceId: string | null;
+  read: boolean;
+  createdAt: number;
+}
 export type OutboxStatus = "pending" | "syncing" | "synced" | "failed" | "conflict";
 
 export interface OutboxItem {
@@ -134,6 +161,8 @@ class VitalioDB extends Dexie {
   zoneMembers!: Table<ZoneMembership, string>;
   outbox!: Table<OutboxItem, string>;
   flashReplies!: Table<FlashReply, string>;
+  radarWatches!: Table<RadarWatch, string>;
+  radarAlerts!: Table<RadarAlert, string>;
 
   constructor() {
     super("vitalio");
@@ -152,6 +181,10 @@ class VitalioDB extends Dexie {
     });
     this.version(4).stores({
       flashReplies: "id, flashId, createdAt",
+    });
+    this.version(5).stores({
+      radarWatches: "id, createdAt",
+      radarAlerts: "id, createdAt, read",
     });
   }
 }
