@@ -5,7 +5,8 @@ export type AppEvent =
   | { type: "zone:joined"; zoneId: string }
   | { type: "identity:updated" }
   | { type: "espace:created"; uuid: string }
-  | { type: "sync:changed" };
+  | { type: "sync:changed" }
+  | { type: "radar:changed" };
 
 type Handler = (event: AppEvent) => void;
 

@@ -154,6 +154,34 @@ const handlers: Record<OutboxKind, Handler> = {
     });
     if (error) throw new Error(error.message);
   },
+  "radar:watch:upsert": async (p, userId) => {
+    const { error } = await supabase.from("radar_watches").upsert({
+      id: p.id,
+      user_id: userId,
+      label: p.label,
+      categories: p.categories,
+      radius_m: p.radiusM,
+      zone_id: p.zoneId ?? null,
+      is_active: p.active,
+    });
+    if (error) throw new Error(error.message);
+  },
+  "radar:watch:delete": async (p, userId) => {
+    const { error } = await supabase
+      .from("radar_watches")
+      .delete()
+      .eq("id", p.id)
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+  },
+  "radar:alert:read": async (p, userId) => {
+    const { error } = await supabase
+      .from("radar_alerts")
+      .update({ is_read: true })
+      .eq("id", p.id)
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+  },
 };
 
 let flushing = false;

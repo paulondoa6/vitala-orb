@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Bell, User, Zap } from "lucide-react";
+import { Bell, Radar, User, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -55,6 +55,13 @@ export const TopBar = () => {
           </Link>
 
           <div className="flex items-center gap-2">
+            <Link
+              to="/radar"
+              aria-label="Mon radar"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl glass text-foreground/80 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Radar className="h-4.5 w-4.5" strokeWidth={2.2} />
+            </Link>
             {/* Notifications */}
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
