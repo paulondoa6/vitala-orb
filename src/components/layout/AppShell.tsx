@@ -10,7 +10,7 @@ import { track } from "@/core/analytics";
 // Pages où la top-bar n'a pas d'utilité (immersion ou détail avec son propre header)
 const isImmersive = (pathname: string) =>
   pathname === "/scan" ||
-  /^\/(zone|espace|boite)\/[^/]+/.test(pathname) ||
+  /^\/(flash|zone|espace|boite)\/[^/]+/.test(pathname) ||
   pathname === "/profile/edit";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
