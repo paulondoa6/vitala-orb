@@ -95,6 +95,15 @@ export interface ZoneMembership {
   joinedAt: number;
 }
 
+export interface FlashReply {
+  id: string;
+  flashId: string;
+  authorId: string;
+  authorName: string;
+  text: string;
+  createdAt: number;
+}
+
 /** File d'attente d'écritures — Phase 9/10 (offline-first + conflits). */
 export type OutboxKind = "flash:create" | "flash:close" | "espace:create";
 export type OutboxStatus = "pending" | "syncing" | "synced" | "failed" | "conflict";
@@ -124,6 +133,7 @@ class VitalioDB extends Dexie {
   zones!: Table<Zone, string>;
   zoneMembers!: Table<ZoneMembership, string>;
   outbox!: Table<OutboxItem, string>;
+  flashReplies!: Table<FlashReply, string>;
 
   constructor() {
     super("vitalio");
@@ -139,6 +149,9 @@ class VitalioDB extends Dexie {
     });
     this.version(3).stores({
       outbox: "id, status, kind, refId, createdAt",
+    });
+    this.version(4).stores({
+      flashReplies: "id, flashId, createdAt",
     });
   }
 }

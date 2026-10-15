@@ -9,6 +9,7 @@ import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import Home from "./pages/Home";
 
 const FlashPage = lazyWithRetry(() => import("./modules/flash/FlashPage"));
+const FlashDetail = lazyWithRetry(() => import("./modules/flash/FlashDetail"));
 const ZonePage = lazyWithRetry(() => import("./modules/zone/ZonePage"));
 const ZoneDetail = lazyWithRetry(() => import("./modules/zone/ZoneDetail"));
 const ScanPage = lazyWithRetry(() => import("./modules/scan/ScanPage"));
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/flash" element={<FlashPage />} />
+            <Route path="/flash/:flashId" element={<FlashDetail />} />
 
             <Route path="/zone" element={<ZonePage />} />
             <Route path="/zone/:zoneId" element={<ZoneDetail />} />
