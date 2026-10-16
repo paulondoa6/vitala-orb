@@ -1,0 +1,22 @@
+{
+  "nav": { "main": "Main navigation", "flash": "Flash", "zone": "Zone", "scan": "Scan", "espace": "Space" },
+  "top": { "home": "Vitalio — home", "radar": "My radar", "notifications": "Notifications", "profile": "My profile" },
+  "common": { "back": "Back", "retry": "Try again", "loading": "Loading…", "cancel": "Cancel", "offline": "You're offline — your changes will be sent later." },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Make vitalio yours.",
+    "notifications": "Notifications", "notificationsHint": "Flash alerts & reminders",
+    "appearance": "Appearance", "appearanceHint": "Dark theme, contrast",
+    "language": "Language", "languageHint": "Follows your device language by default",
+    "privacy": "Privacy", "privacyHint": "Data & permissions",
+    "install": "Install the app", "installHint": "Add vitalio to your home screen", "installed": "Already installed",
+    "iosInstall": "On iPhone: tap Share, then “Add to Home Screen”."
+  },
+  "flash": {
+    "eyebrow": "Flash", "title": "Say what you need,", "titleAccent": "we'll handle the rest",
+    "subtitle": "Post in five seconds. People nearby see it right away.",
+    "mine": "Yours", "around": "Around you", "inProgress": "{{count}} active", "live": "{{count}} live",
+    "emptyTitle": "It's quiet around here", "emptyDesc": "Nobody has posted lately. Start the first flash and wake up the neighborhood."
+  },
+  "radar": { "title": "My radar", "subtitle": "What you're watching around you", "watches": "My watches", "alerts": "Alerts", "add": "Add" }
+}
