@@ -1,0 +1,22 @@
+{
+  "nav": { "main": "Navegación principal", "flash": "Flash", "zone": "Zona", "scan": "Escanear", "espace": "Espacio" },
+  "top": { "home": "Vitalio — inicio", "radar": "Mi radar", "notifications": "Notificaciones", "profile": "Mi perfil" },
+  "common": { "back": "Volver", "retry": "Reintentar", "loading": "Cargando…", "cancel": "Cancelar", "offline": "Estás sin conexión — tus cambios se enviarán más tarde." },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Personaliza tu experiencia vitalio.",
+    "notifications": "Notificaciones", "notificationsHint": "Alertas Flash y recordatorios",
+    "appearance": "Apariencia", "appearanceHint": "Tema oscuro, contraste",
+    "language": "Idioma", "languageHint": "Sigue el idioma de tu dispositivo por defecto",
+    "privacy": "Privacidad", "privacyHint": "Datos y permisos",
+    "install": "Instalar la app", "installHint": "Añade vitalio a tu pantalla de inicio", "installed": "Ya instalada",
+    "iosInstall": "En iPhone: toca Compartir y luego «Añadir a pantalla de inicio»."
+  },
+  "flash": {
+    "eyebrow": "Flash", "title": "Di lo que necesitas,", "titleAccent": "nosotros nos encargamos",
+    "subtitle": "Publica en cinco segundos. La gente cercana lo ve al instante.",
+    "mine": "El tuyo", "around": "A tu alrededor", "inProgress": "{{count}} en curso", "live": "{{count}} en directo",
+    "emptyTitle": "Todo está tranquilo", "emptyDesc": "Nadie ha publicado últimamente. Lanza el primer flash y despierta al barrio."
+  },
+  "radar": { "title": "Mi radar", "subtitle": "Lo que vigilas a tu alrededor", "watches": "Mis alertas", "alerts": "Avisos", "add": "Añadir" }
+}
