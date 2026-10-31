@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { BadgeCheck, Camera, Check, Loader2, Pencil, X } from "lucide-react";
@@ -19,6 +21,7 @@ const readAsDataUrl = (file: File) =>
   });
 
 export const IdentityCard = () => {
+  useTranslation();
   const { identity, update } = useIdentity();
   const [editing, setEditing] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -35,24 +38,24 @@ export const IdentityCard = () => {
   const pickAvatar = async (file?: File) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast.error("Ce fichier n'est pas une image.");
+      toast.error(tc("Ce fichier n'est pas une image."));
       return;
     }
     if (file.size > MAX_AVATAR_BYTES) {
-      toast.error("Image trop lourde", { description: "Choisis une photo de moins de 2 Mo." });
+      toast.error(tc("Image trop lourde"), { description: tc("Choisis une photo de moins de 2 Mo.") });
       return;
     }
     try {
       setAvatar(await readAsDataUrl(file));
     } catch {
-      toast.error("Impossible de lire cette image. Réessaie avec une autre.");
+      toast.error(tc("Impossible de lire cette image. Réessaie avec une autre."));
     }
   };
 
   const save = async () => {
     const parsed = identitySchema.pick({ firstName: true }).safeParse({ firstName });
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Prénom invalide");
+      setError(parsed.error.issues[0]?.message ?? tc("Prénom invalide"));
       return;
     }
     setError(null);
@@ -69,7 +72,7 @@ export const IdentityCard = () => {
       setEditing(false);
       toast.success(`C'est noté, ${parsed.data.firstName}.`);
     } catch {
-      toast.error("Ton profil n'a pas pu être enregistré. Réessaie.");
+      toast.error(tc("Ton profil n'a pas pu être enregistré. Réessaie."));
     } finally {
       setSaving(false);
     }
@@ -92,7 +95,7 @@ export const IdentityCard = () => {
         <button
           type="button"
           onClick={() => setEditing(true)}
-          aria-label="Modifier mon prénom et mon avatar"
+          aria-label={tc("Modifier mon prénom et mon avatar")}
           className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-xl border border-border/60 bg-background/60 backdrop-blur transition-colors hover:bg-background/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Pencil className="h-4 w-4" />
@@ -113,7 +116,7 @@ export const IdentityCard = () => {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                aria-label="Changer ma photo"
+                aria-label={tc("Changer ma photo")}
                 className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary text-primary-foreground shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Camera className="h-4 w-4" />
@@ -137,13 +140,13 @@ export const IdentityCard = () => {
           {editing ? (
             <div>
               <label htmlFor="firstName" className="text-[11px] font-medium text-muted-foreground">
-                Comment on t'appelle ?
+                {tc("Comment on t'appelle ?")}
               </label>
               <Input
                 id="firstName"
                 value={firstName}
                 autoFocus
-                placeholder="Ton prénom"
+                placeholder={tc("Ton prénom")}
                 onChange={(e) => setFirstName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && void save()}
                 aria-invalid={Boolean(error)}
@@ -159,14 +162,14 @@ export const IdentityCard = () => {
           ) : (
             <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}>
               <h2 className="truncate text-xl font-semibold tracking-tight">
-                {identity?.firstName ?? "Ton profil"}
+                {identity?.firstName ?? tc("Ton profil")}
               </h2>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 {identity?.firstName
                   ? identity.city
                     ? `Sur Vitalio · ${identity.city}`
-                    : "Sur Vitalio, en local et hors ligne"
-                  : "Ajoute ton prénom pour personnaliser l'app"}
+                    : tc("Sur Vitalio, en local et hors ligne")
+                  : tc("Ajoute ton prénom pour personnaliser l'app")}
               </p>
             </motion.div>
           )}
@@ -177,10 +180,10 @@ export const IdentityCard = () => {
         <div className="relative mt-4 flex gap-2">
           <Button onClick={() => void save()} disabled={saving} className="flex-1 gap-1.5">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-            Enregistrer
+            {tc("Enregistrer")}
           </Button>
           <Button variant="ghost" onClick={cancel} disabled={saving} className="gap-1.5">
-            <X className="h-4 w-4" /> Annuler
+            <X className="h-4 w-4" /> {tc("Annuler")}
           </Button>
         </div>
       )}

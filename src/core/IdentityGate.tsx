@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
@@ -12,6 +14,7 @@ type Pending = { reason: string; resolve: (name: string | null) => void } | null
  * and this sheet takes care of asking the user's first name — once, kindly.
  */
 export const IdentityGate = () => {
+  useTranslation();
   const [pending, setPending] = useState<Pending>(null);
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +52,7 @@ export const IdentityGate = () => {
   const submit = () => {
     const trimmed = name.trim();
     if (trimmed.length < 2) {
-      setError("Deux lettres minimum, c'est tout ce qu'on demande.");
+      setError(tc("Deux lettres minimum, c'est tout ce qu'on demande."));
       return;
     }
     close(trimmed);
@@ -81,7 +84,7 @@ export const IdentityGate = () => {
               <Sparkles className="h-5 w-5" />
             </div>
             <h2 id="identity-title" className="mt-4 text-xl font-semibold tracking-tight">
-              Comment on t'appelle ?
+              {tc("Comment on t'appelle ?")}
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
               Juste ton prénom, pour {pending.reason}. Pas de mot de passe, pas d'e-mail.
@@ -94,8 +97,8 @@ export const IdentityGate = () => {
                 setError(null);
               }}
               onKeyDown={(e) => e.key === "Enter" && submit()}
-              placeholder="Ton prénom"
-              aria-label="Ton prénom"
+              placeholder={tc("Ton prénom")}
+              aria-label={tc("Ton prénom")}
               aria-invalid={Boolean(error)}
               className="mt-5 h-12 rounded-2xl text-base"
             />
@@ -110,13 +113,13 @@ export const IdentityGate = () => {
                 className="h-12 flex-1 rounded-2xl"
                 onClick={() => close(null)}
               >
-                Plus tard
+                {tc("Plus tard")}
               </Button>
               <Button
                 className="h-12 flex-[1.4] rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow"
                 onClick={submit}
               >
-                C'est parti
+                {tc("C'est parti")}
               </Button>
             </div>
           </motion.div>

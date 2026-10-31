@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -12,20 +14,21 @@ import { activityLabel, joinZone } from "./api";
 import { useZoneDetail } from "./hooks";
 
 const ZoneDetail = () => {
+  useTranslation();
   const { zoneId } = useParams();
   const { pulse, flashes, joined, loading, error, reload, setJoined } = useZoneDetail(zoneId);
   const [busy, setBusy] = useState(false);
 
   const join = async () => {
     if (!pulse || busy) return;
-    const me = await ensureIdentity("rejoindre cette zone");
+    const me = await ensureIdentity(tc("rejoindre cette zone"));
     if (!me?.firstName) return;
     setBusy(true);
     try {
       await joinZone(pulse.zone.id, me.id);
       setJoined(true);
       toast.success(`Bienvenue dans ${pulse.zone.name}`, {
-        description: "Tu verras les flashs et les opportunités du quartier en priorité.",
+        description: tc("Tu verras les flashs et les opportunités du quartier en priorité."),
       });
     } finally {
       setBusy(false);
@@ -38,18 +41,18 @@ const ZoneDetail = () => {
         to="/zone"
         className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="h-3.5 w-3.5" /> Toutes les zones
+        <ArrowLeft className="h-3.5 w-3.5" /> {tc("Toutes les zones")}
       </Link>
 
       {loading ? (
         <div className="mt-6">
-          <LoadingState label="On prend le pouls du quartier…" />
+          <LoadingState label={tc("On prend le pouls du quartier…")} />
         </div>
       ) : error || !pulse ? (
         <div className="mt-6">
           <ErrorState
-            title="Zone introuvable"
-            description={error ?? "Cette zone n'est plus disponible."}
+            title={tc("Zone introuvable")}
+            description={error ?? tc("Cette zone n'est plus disponible.")}
             onRetry={reload}
           />
         </div>
@@ -88,9 +91,9 @@ const ZoneDetail = () => {
 
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
               {[
-                { icon: Zap, value: pulse.liveFlashes, label: "en direct" },
-                { icon: Users, value: pulse.members, label: "membres" },
-                { icon: Sparkles, value: pulse.opportunities, label: "opportunités" },
+                { icon: Zap, value: pulse.liveFlashes, label: tc("en direct") },
+                { icon: Users, value: pulse.members, label: tc("membres") },
+                { icon: Sparkles, value: pulse.opportunities, label: tc("opportunités") },
               ].map((s) => (
                 <div key={s.label} className="rounded-2xl bg-secondary/60 py-2.5">
                   <s.icon className="mx-auto h-3.5 w-3.5 text-primary" />
@@ -107,21 +110,21 @@ const ZoneDetail = () => {
             >
               {joined ? (
                 <>
-                  <Check className="mr-2 h-4 w-4" /> Tu fais partie de cette zone
+                  <Check className="mr-2 h-4 w-4" /> {tc("Tu fais partie de cette zone")}
                 </>
               ) : (
-                "Rejoindre cette zone"
+                tc("Rejoindre cette zone")
               )}
             </Button>
           </motion.header>
 
-          <SectionLabel label="Opportunités" trailing={`${pulse.opportunities}`} />
+          <SectionLabel label={tc("Opportunités")} trailing={`${pulse.opportunities}`} />
           <div className="mt-3 space-y-2.5">
             {pulse.zone.opportunities.length === 0 ? (
               <EmptyState
                 icon={<Sparkles className="h-5 w-5" />}
-                title="Rien à saisir pour l'instant"
-                description="Les espaces du quartier n'ont rien publié récemment."
+                title={tc("Rien à saisir pour l'instant")}
+                description={tc("Les espaces du quartier n'ont rien publié récemment.")}
               />
             ) : (
               pulse.zone.opportunities.map((op) => (
@@ -133,13 +136,13 @@ const ZoneDetail = () => {
             )}
           </div>
 
-          <SectionLabel label="Flashs du quartier" trailing={`${flashes.length}`} />
+          <SectionLabel label={tc("Flashs du quartier")} trailing={`${flashes.length}`} />
           <div className="mt-3 space-y-3 pb-4">
             {flashes.length === 0 ? (
               <EmptyState
                 icon={<Zap className="h-5 w-5" />}
-                title="Aucun flash actif ici"
-                description="Publie le tien depuis l'onglet Flash, les membres de la zone le verront."
+                title={tc("Aucun flash actif ici")}
+                description={tc("Publie le tien depuis l'onglet Flash, les membres de la zone le verront.")}
               />
             ) : (
               flashes.map((f, i) => <FlashItemCard key={f.id} flash={f} index={i} />)

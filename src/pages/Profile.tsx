@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { AppShell } from "@/components/layout/AppShell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -82,6 +84,7 @@ const settings = [
 ];
 
 const Profile = () => {
+  useTranslation();
   const { profile } = useProfile();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -110,8 +113,8 @@ const Profile = () => {
       <AppShell>
         <div className="pt-6">
           <ErrorState
-            title="Profil indisponible"
-            description="Impossible de charger vos informations. Veuillez réessayer."
+            title={tc("Profil indisponible")}
+            description={tc("Impossible de charger vos informations. Veuillez réessayer.")}
             onRetry={load}
           />
         </div>
@@ -130,7 +133,7 @@ const Profile = () => {
     {/* Vital level */}
     <section className="mt-4 rounded-3xl glass shadow-float p-5">
       <div className="mb-1.5 flex items-center justify-between text-xs">
-        <span className="font-medium text-foreground">Niveau Vital · {profile.level}</span>
+        <span className="font-medium text-foreground">{tc("Niveau Vital ·")} {profile.level}</span>
         <span className="text-muted-foreground">{profile.xp} / 1000 XP</span>
       </div>
       <Progress value={xpPct} className="h-2" />
@@ -138,7 +141,7 @@ const Profile = () => {
         to="/profile/edit"
         className="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
       >
-        <Pencil className="h-3 w-3" /> Modifier mes informations
+        <Pencil className="h-3 w-3" /> {tc("Modifier mes informations")}
       </Link>
     </section>
 
@@ -160,8 +163,8 @@ const Profile = () => {
     {/* Trust & credibility */}
     <section className="mt-6">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold tracking-tight">Confiance & crédibilité</h3>
-        <span className="text-[11px] text-muted-foreground">Mis à jour aujourd'hui</span>
+        <h3 className="text-sm font-semibold tracking-tight">{tc("Confiance & crédibilité")}</h3>
+        <span className="text-[11px] text-muted-foreground">{tc("Mis à jour aujourd'hui")}</span>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {trustItems.map(({ icon: Icon, label, tone }) => (
@@ -193,10 +196,10 @@ const Profile = () => {
         <div className="relative">
           <div className="flex items-center gap-2">
             <Gift className="h-5 w-5" />
-            <h3 className="text-base font-semibold">Parrainage</h3>
+            <h3 className="text-base font-semibold">{tc("Parrainage")}</h3>
           </div>
           <p className="mt-1 text-xs opacity-90">
-            Invite tes amis · Gagne <span className="font-semibold">10€</span> pour chaque inscription.
+            {tc("Invite tes amis · Gagne")} <span className="font-semibold">10€</span> {tc("pour chaque inscription.")}
           </p>
 
           <div className="mt-4 flex items-center gap-2 rounded-2xl bg-background/15 backdrop-blur px-3 py-2.5">
@@ -205,21 +208,21 @@ const Profile = () => {
               <Copy className="h-4 w-4" />
             </button>
             <button className="flex h-8 items-center gap-1 rounded-xl bg-background text-foreground px-3 text-xs font-semibold hover:opacity-90 transition-opacity">
-              <Share2 className="h-3.5 w-3.5" /> Partager
+              <Share2 className="h-3.5 w-3.5" /> {tc("Partager")}
             </button>
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">
             <div className="rounded-xl bg-background/15 p-2">
-              <p className="text-[10px] opacity-80">Invités</p>
+              <p className="text-[10px] opacity-80">{tc("Invités")}</p>
               <p className="text-base font-semibold">14</p>
             </div>
             <div className="rounded-xl bg-background/15 p-2">
-              <p className="text-[10px] opacity-80">Validés</p>
+              <p className="text-[10px] opacity-80">{tc("Validés")}</p>
               <p className="text-base font-semibold">9</p>
             </div>
             <div className="rounded-xl bg-background/15 p-2">
-              <p className="text-[10px] opacity-80">Gains</p>
+              <p className="text-[10px] opacity-80">{tc("Gains")}</p>
               <p className="text-base font-semibold">90€</p>
             </div>
           </div>
@@ -231,11 +234,11 @@ const Profile = () => {
     <section className="mt-6">
       <div className="mb-3 flex items-end justify-between">
         <div>
-          <h3 className="text-sm font-semibold tracking-tight">Retours utilisateurs</h3>
-          <p className="text-[11px] text-muted-foreground">Avis vérifiés sur services, produits & demandes</p>
+          <h3 className="text-sm font-semibold tracking-tight">{tc("Retours utilisateurs")}</h3>
+          <p className="text-[11px] text-muted-foreground">{tc("Avis vérifiés sur services, produits & demandes")}</p>
         </div>
         <button className="text-xs font-medium text-primary inline-flex items-center gap-0.5">
-          Tout voir <ChevronRight className="h-3 w-3" />
+          {tc("Tout voir")} <ChevronRight className="h-3 w-3" />
         </button>
       </div>
 
@@ -249,7 +252,7 @@ const Profile = () => {
                 <Star key={i} className="h-3 w-3 fill-primary text-primary" />
               ))}
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground">128 avis</p>
+            <p className="mt-1 text-[10px] text-muted-foreground">{tc("128 avis")}</p>
           </div>
           <div className="flex-1 space-y-1">
             {[
@@ -272,9 +275,9 @@ const Profile = () => {
 
         <div className="mt-4 grid grid-cols-3 gap-2">
           {[
-            { icon: ThumbsUp, label: "Recommandé", value: "98%" },
-            { icon: MessageSquareQuote, label: "Réponse", value: "< 1h" },
-            { icon: Shield, label: "Litiges", value: "0" },
+            { icon: ThumbsUp, label: tc("Recommandé"), value: "98%" },
+            { icon: MessageSquareQuote, label: tc("Réponse"), value: "< 1h" },
+            { icon: Shield, label: tc("Litiges"), value: "0" },
           ].map(({ icon: Icon, label, value }) => (
             <div key={label} className="rounded-xl bg-background/40 p-2 text-center">
               <Icon className="mx-auto h-3.5 w-3.5 text-primary" />
@@ -323,7 +326,7 @@ const Profile = () => {
           </article>
         ))}
         <button className="w-full rounded-2xl border border-dashed border-border py-2.5 text-xs font-medium text-muted-foreground hover:bg-accent/10 transition-colors">
-          Laisser un avis
+          {tc("Laisser un avis")}
         </button>
       </div>
     </section>
@@ -335,8 +338,8 @@ const Profile = () => {
           <Users className="h-5 w-5" />
         </span>
         <div className="flex-1">
-          <p className="text-sm font-semibold">Communauté Vitalio</p>
-          <p className="text-[11px] text-muted-foreground">Rejoins 24k membres actifs</p>
+          <p className="text-sm font-semibold">{tc("Communauté Vitalio")}</p>
+          <p className="text-[11px] text-muted-foreground">{tc("Rejoins 24k membres actifs")}</p>
         </div>
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </div>
@@ -344,7 +347,7 @@ const Profile = () => {
 
     {/* Settings shortcuts */}
     <section className="mt-6">
-      <h3 className="mb-2 text-sm font-semibold tracking-tight">Paramètres du compte</h3>
+      <h3 className="mb-2 text-sm font-semibold tracking-tight">{tc("Paramètres du compte")}</h3>
       <div className="space-y-2">
         {settings.map(({ icon: Icon, label, hint }) => (
           <button
@@ -362,7 +365,7 @@ const Profile = () => {
           </button>
         ))}
         <button className="flex w-full items-center justify-center gap-2 rounded-2xl border border-destructive/30 bg-destructive/5 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors">
-          <LogOut className="h-4 w-4" /> Se déconnecter
+          <LogOut className="h-4 w-4" /> {tc("Se déconnecter")}
         </button>
       </div>
     </section>

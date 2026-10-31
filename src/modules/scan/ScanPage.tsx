@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -23,6 +25,7 @@ import type { FlashCategory } from "@/core/db";
 const RADII = [500, 1500, 5000];
 
 const ScanPage = () => {
+  useTranslation();
   const [config, setConfig] = useState<ScanConfig>(DEFAULT_CONFIG);
   const [filters, setFilters] = useState<Set<ResultBucket>>(new Set());
   const { pulses } = useZonePulses();
@@ -58,13 +61,13 @@ const ScanPage = () => {
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Scan"
+        eyebrow={tc("Scan")}
         title={
           <>
-            Regarde <span className="italic font-normal text-primary">autour de toi</span>
+            {tc("Regarde")} <span className="italic font-normal text-primary">{tc("autour de toi")}</span>
           </>
         }
-        subtitle="Dis-nous ce que tu cherches, on balaie le quartier et on classe ce qui compte."
+        subtitle={tc("Dis-nous ce que tu cherches, on balaie le quartier et on classe ce qui compte.")}
       />
 
       <AnimatePresence mode="wait">
@@ -75,10 +78,10 @@ const ScanPage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="glass shadow-float mt-5 rounded-3xl p-4"
-            aria-label="Configuration du scan"
+            aria-label={tc("Configuration du scan")}
           >
             <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <Sliders className="h-3.5 w-3.5" /> Ce que tu cherches
+              <Sliders className="h-3.5 w-3.5" /> {tc("Ce que tu cherches")}
             </p>
 
             <div className="mt-3 grid grid-cols-2 gap-2">
@@ -125,7 +128,7 @@ const ScanPage = () => {
             )}
 
             <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Jusqu'où on regarde
+              {tc("Jusqu'où on regarde")}
             </p>
             <div className="mt-2 flex gap-1.5">
               {RADII.map((r) => (
@@ -147,7 +150,7 @@ const ScanPage = () => {
             </div>
 
             <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Catégories (facultatif)
+              {tc("Catégories (facultatif)")}
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {FLASH_CATEGORIES.map((c) => (
@@ -172,7 +175,7 @@ const ScanPage = () => {
               onClick={() => start(config)}
               className="mt-4 h-12 w-full rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow"
             >
-              <RadarIcon className="mr-2 h-4 w-4" /> Lancer le scan
+              <RadarIcon className="mr-2 h-4 w-4" /> {tc("Lancer le scan")}
             </Button>
           </motion.section>
         )}
@@ -180,7 +183,7 @@ const ScanPage = () => {
 
       {error && (
         <div className="mt-5">
-          <ErrorState title="Scan interrompu" description={error} onRetry={() => start(config)} />
+          <ErrorState title={tc("Scan interrompu")} description={error} onRetry={() => start(config)} />
         </div>
       )}
 
@@ -219,7 +222,7 @@ const ScanPage = () => {
                 onClick={() => setFilters(new Set())}
                 className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-primary"
               >
-                Tout voir
+                {tc("Tout voir")}
               </button>
             )}
           </div>
@@ -262,8 +265,8 @@ const ScanPage = () => {
             <div className="mt-5">
               <EmptyState
                 icon={<RadarIcon className="h-5 w-5" />}
-                title="Rien dans ce périmètre"
-                description="Élargis le rayon ou change de mode : il se passe forcément quelque chose un peu plus loin."
+                title={tc("Rien dans ce périmètre")}
+                description={tc("Élargis le rayon ou change de mode : il se passe forcément quelque chose un peu plus loin.")}
               />
             </div>
           )}
@@ -274,7 +277,7 @@ const ScanPage = () => {
               onClick={reset}
               className="mt-5 h-12 w-full rounded-2xl border border-border/60"
             >
-              <RotateCcw className="mr-2 h-4 w-4" /> Régler et relancer
+              <RotateCcw className="mr-2 h-4 w-4" /> {tc("Régler et relancer")}
             </Button>
           )}
           <div className="pb-4" />
