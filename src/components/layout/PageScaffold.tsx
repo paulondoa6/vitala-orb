@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
@@ -8,7 +10,7 @@ interface SkeletonProps {
   className?: string;
 }
 
-export const Skeleton = ({ className }: SkeletonProps) => (
+export const Skeleton = ({ className }: SkeletonProps) => { useTranslation(); return (
   <div
     className={cn(
       "relative overflow-hidden rounded-2xl bg-muted/70",
@@ -17,7 +19,7 @@ export const Skeleton = ({ className }: SkeletonProps) => (
       className,
     )}
   />
-);
+); };
 
 interface ErrorStateProps {
   title?: string;
@@ -27,11 +29,11 @@ interface ErrorStateProps {
 }
 
 export const ErrorState = ({
-  title = "Une erreur est survenue",
-  description = "Impossible de charger les données. Veuillez réessayer.",
+  title = tc("Une erreur est survenue"),
+  description = tc("Impossible de charger les données. Veuillez réessayer."),
   onRetry,
   className,
-}: ErrorStateProps) => (
+}: ErrorStateProps) => { useTranslation(); return (
   <motion.div
     initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
@@ -57,11 +59,11 @@ export const ErrorState = ({
         size="sm"
         className="mt-1 rounded-xl bg-gradient-primary text-primary-foreground shadow-glow"
       >
-        <RefreshCw className="mr-1 h-3.5 w-3.5" /> Réessayer
+        <RefreshCw className="mr-1 h-3.5 w-3.5" /> {tc("Réessayer")}
       </Button>
     )}
   </motion.div>
-);
+); };
 
 
 interface PageHeaderProps {
@@ -71,7 +73,7 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export const PageHeader = ({ eyebrow, title, subtitle, className }: PageHeaderProps) => (
+export const PageHeader = ({ eyebrow, title, subtitle, className }: PageHeaderProps) => { useTranslation(); return (
   <motion.header
     initial={{ opacity: 0, y: -6 }}
     animate={{ opacity: 1, y: 0 }}
@@ -92,7 +94,7 @@ export const PageHeader = ({ eyebrow, title, subtitle, className }: PageHeaderPr
       </p>
     )}
   </motion.header>
-);
+); };
 
 interface SectionLabelProps {
   label: ReactNode;
@@ -100,7 +102,7 @@ interface SectionLabelProps {
   className?: string;
 }
 
-export const SectionLabel = ({ label, trailing, className }: SectionLabelProps) => (
+export const SectionLabel = ({ label, trailing, className }: SectionLabelProps) => { useTranslation(); return (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -113,7 +115,7 @@ export const SectionLabel = ({ label, trailing, className }: SectionLabelProps) 
     <span className="h-px flex-1 ml-3 bg-gradient-to-r from-border to-transparent" />
     {trailing && <span className="ml-3 text-[11px] text-muted-foreground">{trailing}</span>}
   </motion.div>
-);
+); };
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -123,7 +125,7 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export const EmptyState = ({ icon, title, description, action, className }: EmptyStateProps) => (
+export const EmptyState = ({ icon, title, description, action, className }: EmptyStateProps) => { useTranslation(); return (
   <motion.div
     initial={{ opacity: 0, y: 8 }}
     animate={{ opacity: 1, y: 0 }}
@@ -148,14 +150,14 @@ export const EmptyState = ({ icon, title, description, action, className }: Empt
     </div>
     {action}
   </motion.div>
-);
+); };
 
 interface LoadingStateProps {
   label?: string;
   className?: string;
 }
 
-export const LoadingState = ({ label = "Chargement…", className }: LoadingStateProps) => (
+export const LoadingState = ({ label = tc("Chargement…"), className }: LoadingStateProps) => { useTranslation(); return (
   <div
     role="status"
     aria-live="polite"
@@ -167,4 +169,4 @@ export const LoadingState = ({ label = "Chargement…", className }: LoadingStat
     <Loader2 className="h-5 w-5 animate-spin text-primary" />
     <p className="text-xs font-medium text-muted-foreground">{label}</p>
   </div>
-);
+); };

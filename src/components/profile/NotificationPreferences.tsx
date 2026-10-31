@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { Switch } from "@/components/ui/switch";
 import { Zap, AlertTriangle, Sparkles, BellRing, Check, Loader2, CloudOff } from "lucide-react";
 import { useNotifPrefs, type NotifKey } from "@/lib/profileStore";
@@ -10,11 +12,12 @@ const ITEMS: { key: NotifKey; icon: typeof Zap; label: string; hint: string; ton
 ];
 
 const SyncBadge = ({ status }: { status: "idle" | "saving" | "saved" | "error" }) => {
+  useTranslation();
   if (status === "idle") return null;
   const map = {
-    saving: { icon: Loader2, text: "Sync…", cls: "text-muted-foreground", spin: true },
-    saved: { icon: Check, text: "Sauvegardé", cls: "text-primary", spin: false },
-    error: { icon: CloudOff, text: "Hors ligne", cls: "text-destructive", spin: false },
+    saving: { icon: Loader2, text: tc("Sync…"), cls: "text-muted-foreground", spin: true },
+    saved: { icon: Check, text: tc("Sauvegardé"), cls: "text-primary", spin: false },
+    error: { icon: CloudOff, text: tc("Hors ligne"), cls: "text-destructive", spin: false },
   } as const;
   const { icon: Icon, text, cls, spin } = map[status];
   return (
@@ -26,13 +29,14 @@ const SyncBadge = ({ status }: { status: "idle" | "saving" | "saved" | "error" }
 };
 
 export const NotificationPreferences = () => {
+  useTranslation();
   const { prefs, status, toggle } = useNotifPrefs();
   return (
     <section className="mt-6">
       <div className="mb-2 flex items-end justify-between">
         <div>
-          <h3 className="text-sm font-semibold tracking-tight">Préférences de notifications</h3>
-          <p className="text-[11px] text-muted-foreground">Sauvegarde instantanée · synchronisé sur tes appareils</p>
+          <h3 className="text-sm font-semibold tracking-tight">{tc("Préférences de notifications")}</h3>
+          <p className="text-[11px] text-muted-foreground">{tc("Sauvegarde instantanée · synchronisé sur tes appareils")}</p>
         </div>
         <SyncBadge status={status} />
       </div>

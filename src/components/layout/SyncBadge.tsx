@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { AlertTriangle, CloudOff, Loader2, RefreshCw } from "lucide-react";
 import { useEntitySync } from "@/core/useSync";
 import { cn } from "@/lib/utils";
@@ -13,6 +15,7 @@ interface Props {
  * Une carte = un rôle : ici, uniquement l'état d'envoi de cette carte.
  */
 export const SyncBadge = ({ refId, className }: Props) => {
+  useTranslation();
   const { status, retry, keepMine, keepServer } = useEntitySync(refId);
 
   if (status === "synced") return null;
@@ -30,7 +33,7 @@ export const SyncBadge = ({ refId, className }: Props) => {
         ) : (
           <CloudOff className="h-3 w-3" />
         )}
-        {status === "syncing" ? "Envoi en cours" : "En attente d'envoi"}
+        {status === "syncing" ? tc("Envoi en cours") : tc("En attente d'envoi")}
       </span>
     );
   }
@@ -49,7 +52,7 @@ export const SyncBadge = ({ refId, className }: Props) => {
           className,
         )}
       >
-        <RefreshCw className="h-3 w-3" /> Non envoyé · Réessayer
+        <RefreshCw className="h-3 w-3" /> {tc("Non envoyé · Réessayer")}
       </button>
     );
   }
@@ -57,7 +60,7 @@ export const SyncBadge = ({ refId, className }: Props) => {
   return (
     <span className={cn("inline-flex flex-wrap items-center gap-1", className)}>
       <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-600 dark:text-amber-400">
-        <AlertTriangle className="h-3 w-3" /> Deux versions
+        <AlertTriangle className="h-3 w-3" /> {tc("Deux versions")}
       </span>
       <button
         type="button"
@@ -68,7 +71,7 @@ export const SyncBadge = ({ refId, className }: Props) => {
         }}
         className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        Garder la mienne
+        {tc("Garder la mienne")}
       </button>
       <button
         type="button"
@@ -79,7 +82,7 @@ export const SyncBadge = ({ refId, className }: Props) => {
         }}
         className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        Garder l'autre
+        {tc("Garder l'autre")}
       </button>
     </span>
   );

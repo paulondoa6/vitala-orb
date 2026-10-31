@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Zap, MapPin, Radar, LayoutGrid, ArrowRight, History } from "lucide-react";
@@ -14,18 +16,19 @@ const TILE_COPY: Record<HomeTileDTO["key"], { icon: typeof Zap; title: string; l
 };
 
 const Home = () => {
+  useTranslation();
   const { data, error, reload, firstName } = useHomeScreen();
 
   return (
     <AppShell>
       <PageHeader
-        eyebrow={firstName ? `Salut ${firstName}` : "Bienvenue"}
+        eyebrow={firstName ? `Salut ${firstName}` : tc("Bienvenue")}
         title={
           <>
-            Tout se passe <span className="italic font-normal text-primary">ici</span>, autour de toi
+            {tc("Tout se passe")} <span className="italic font-normal text-primary">{tc("ici")}</span>{tc(", autour de toi")}
           </>
         }
-        subtitle="Quatre façons d'avancer : demander, explorer, chercher, créer."
+        subtitle={tc("Quatre façons d'avancer : demander, explorer, chercher, créer.")}
       />
 
       {data?.resume && (
@@ -50,7 +53,7 @@ const Home = () => {
         </motion.div>
       )}
 
-      <SectionLabel label="Par où tu commences ?" />
+      <SectionLabel label={tc("Par où tu commences ?")} />
 
       {error && !data ? (
         <ErrorState description={error} onRetry={reload} className="mt-4" />
@@ -90,7 +93,7 @@ const Home = () => {
       )}
 
       <p className="pb-4 text-center text-[11px] text-muted-foreground">
-        On te demande ton prénom seulement au moment d'agir. Rien d'autre.
+        {tc("On te demande ton prénom seulement au moment d'agir. Rien d'autre.")}
       </p>
     </AppShell>
   );

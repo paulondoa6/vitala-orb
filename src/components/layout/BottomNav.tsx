@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useLocation } from "react-router-dom";
 import { LayoutGrid, Zap, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
@@ -11,6 +13,7 @@ const items = [
 const itemsRight = [{ to: "/espace", icon: LayoutGrid, label: "Espace" }];
 
 export const BottomNav = () => {
+  useTranslation();
   const { pathname } = useLocation();
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
@@ -19,7 +22,7 @@ export const BottomNav = () => {
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 28, delay: 0.1 }}
-      aria-label="Navigation principale"
+      aria-label={tc("Navigation principale")}
       role="navigation"
       className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
     >

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -9,6 +11,7 @@ import { useProfile, profileSchema, type Profile } from "@/lib/profileStore";
 import { toast } from "@/hooks/use-toast";
 
 export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
+  useTranslation();
   const { profile, update } = useProfile();
   const [draft, setDraft] = useState<Profile>(profile);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -22,11 +25,11 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
   const onPick = (f?: File | null) => {
     if (!f) return;
     if (!f.type.startsWith("image/")) {
-      setErrors((e) => ({ ...e, avatar: "Image uniquement" }));
+      setErrors((e) => ({ ...e, avatar: tc("Image uniquement") }));
       return;
     }
     if (f.size > 3 * 1024 * 1024) {
-      setErrors((e) => ({ ...e, avatar: "Max 3 Mo" }));
+      setErrors((e) => ({ ...e, avatar: tc("Max 3 Mo") }));
       return;
     }
     const reader = new FileReader();
@@ -46,7 +49,7 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
       return;
     }
     update(res.data);
-    toast({ title: "Profil mis à jour", description: "Tes informations ont été sauvegardées." });
+    toast({ title: tc("Profil mis à jour"), description: tc("Tes informations ont été sauvegardées.") });
     onDone?.();
   };
 
@@ -68,10 +71,10 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
             type="button"
             onClick={() => fileRef.current?.click()}
             className="group relative"
-            aria-label="Changer la photo"
+            aria-label={tc("Changer la photo")}
           >
             <Avatar className="h-16 w-16 ring-4 ring-background shadow-glow">
-              <AvatarImage src={draft.avatar} alt="Aperçu" />
+              <AvatarImage src={draft.avatar} alt={tc("Aperçu")} />
               <AvatarFallback className="bg-gradient-primary text-lg text-primary-foreground">
                 {initials || "V"}
               </AvatarFallback>
@@ -89,7 +92,7 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
               <MapPin className="h-3 w-3" /> {draft.location || "—"}
             </p>
             <p className="mt-1 inline-flex items-center gap-1 text-[10px] font-medium text-primary">
-              <Crown className="h-3 w-3" /> Niveau {draft.level} · {draft.xp} XP
+              <Crown className="h-3 w-3" /> {tc("Niveau")} {draft.level} · {draft.xp} XP
             </p>
           </div>
         </div>
@@ -110,14 +113,14 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
       {/* Name */}
       <div className="space-y-1.5">
         <Label htmlFor="name" className="text-xs">
-          <User className="mr-1 inline h-3 w-3" /> Nom complet
+          <User className="mr-1 inline h-3 w-3" /> {tc("Nom complet")}
         </Label>
         <Input
           id="name"
           value={draft.name}
           maxLength={40}
           onChange={(e) => set("name", e.target.value)}
-          placeholder="Prénom Nom"
+          placeholder={tc("Prénom Nom")}
           aria-invalid={!!errors.name}
         />
         {errors.name && <p className="text-[11px] text-destructive">{errors.name}</p>}
@@ -126,14 +129,14 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
       {/* Location */}
       <div className="space-y-1.5">
         <Label htmlFor="location" className="text-xs">
-          <MapPin className="mr-1 inline h-3 w-3" /> Localisation
+          <MapPin className="mr-1 inline h-3 w-3" /> {tc("Localisation")}
         </Label>
         <Input
           id="location"
           value={draft.location}
           maxLength={60}
           onChange={(e) => set("location", e.target.value)}
-          placeholder="Ville, Pays"
+          placeholder={tc("Ville, Pays")}
           aria-invalid={!!errors.location}
         />
         {errors.location && <p className="text-[11px] text-destructive">{errors.location}</p>}
@@ -143,9 +146,9 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
       <div className="space-y-2 rounded-2xl bg-muted/40 p-3">
         <div className="flex items-center justify-between">
           <Label className="text-xs">
-            <Crown className="mr-1 inline h-3 w-3" /> Niveau Vital
+            <Crown className="mr-1 inline h-3 w-3" /> {tc("Niveau Vital")}
           </Label>
-          <span className="text-xs font-semibold text-primary">Niv. {draft.level}</span>
+          <span className="text-xs font-semibold text-primary">{tc("Niv.")} {draft.level}</span>
         </div>
         <Slider
           value={[draft.level]}
@@ -170,11 +173,11 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
       <div className="flex gap-2 pt-2">
         {onDone && (
           <Button type="button" variant="ghost" className="flex-1" onClick={onDone}>
-            Annuler
+            {tc("Annuler")}
           </Button>
         )}
         <Button type="submit" className="flex-1 bg-gradient-primary text-primary-foreground hover:opacity-90">
-          <Check className="h-4 w-4" /> Enregistrer
+          <Check className="h-4 w-4" /> {tc("Enregistrer")}
         </Button>
       </div>
     </form>

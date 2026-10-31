@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, Flame, MapPin, Sparkles, Users, Zap } from "lucide-react";
@@ -7,7 +9,7 @@ import { ListRowSkeleton } from "@/components/layout/Skeletons";
 import { activityLabel, type ZonePulse } from "./api";
 import { useZonePulses } from "./hooks";
 
-const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => (
+const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => { useTranslation(); return (
   <motion.div
     initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}
@@ -32,7 +34,7 @@ const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => (
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
             <span className="flex items-center gap-1">
               <Zap className="h-3 w-3 text-primary" />
-              {pulse.liveFlashes} en direct
+              {pulse.liveFlashes} {tc("en direct")}
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
@@ -62,26 +64,27 @@ const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => (
       </div>
     </Link>
   </motion.div>
-);
+); };
 
 const ZonePage = () => {
+  useTranslation();
   const { pulses, loading, error, reload } = useZonePulses();
 
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Zone"
+        eyebrow={tc("Zone")}
         title={
           <>
-            Là où <span className="italic font-normal text-primary">ça se passe</span>
+            {tc("Là où")} <span className="italic font-normal text-primary">{tc("ça se passe")}</span>
           </>
         }
-        subtitle="Les quartiers classés par activité réelle : flashs en cours, membres, opportunités."
+        subtitle={tc("Les quartiers classés par activité réelle : flashs en cours, membres, opportunités.")}
       />
 
       {error ? (
         <div className="mt-6">
-          <ErrorState title="Zones indisponibles" description={error} onRetry={reload} />
+          <ErrorState title={tc("Zones indisponibles")} description={error} onRetry={reload} />
         </div>
       ) : loading ? (
         <div className="mt-6 space-y-3">
@@ -91,7 +94,7 @@ const ZonePage = () => {
         </div>
       ) : (
         <>
-          <SectionLabel label={`${pulses.length} zones`} trailing="triées par activité" />
+          <SectionLabel label={`${pulses.length} zones`} trailing={tc("triées par activité")} />
           <div className="mt-3 space-y-3 pb-4">
             {pulses.map((p, i) => (
               <ZoneRow key={p.zone.id} pulse={p} index={i} />

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Send, Loader2, Sparkles } from "lucide-react";
@@ -31,6 +33,7 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 export const AssistantWidget = () => {
+  useTranslation();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([WELCOME]);
@@ -132,12 +135,12 @@ export const AssistantWidget = () => {
       });
 
       if (resp.status === 429) {
-        toast.error("Trop de requêtes, réessaie dans un instant.");
+        toast.error(tc("Trop de requêtes, réessaie dans un instant."));
         setLoading(false);
         return;
       }
       if (resp.status === 402) {
-        toast.error("Crédits Lovable AI épuisés.");
+        toast.error(tc("Crédits Lovable AI épuisés."));
         setLoading(false);
         return;
       }
@@ -175,7 +178,7 @@ export const AssistantWidget = () => {
       }
     } catch (e) {
       console.error(e);
-      toast.error("L'assistant est indisponible. Réessaie.");
+      toast.error(tc("L'assistant est indisponible. Réessaie."));
     } finally {
       setLoading(false);
     }
@@ -194,7 +197,7 @@ export const AssistantWidget = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.4 }}
         onClick={() => setOpen(true)}
-        aria-label="Ouvrir l'assistant Vita"
+        aria-label={tc("Ouvrir l'assistant Vita")}
         className={cn(
           "fixed z-40 right-4 flex h-14 w-14 items-center justify-center rounded-2xl",
           "bg-gradient-primary text-primary-foreground shadow-glow",
@@ -227,7 +230,7 @@ export const AssistantWidget = () => {
               transition={{ type: "spring", stiffness: 280, damping: 30 }}
               role="dialog"
               aria-modal="true"
-              aria-label="Assistant Vita"
+              aria-label={tc("Assistant Vita")}
               onKeyDown={handleKeyDown}
               className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-w-md flex-col rounded-t-[2rem] glass shadow-float"
               style={{ height: "min(82vh, 720px)" }}
@@ -239,11 +242,11 @@ export const AssistantWidget = () => {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">Vita</p>
-                  <p className="text-[11px] text-muted-foreground">Assistant Vitalio · en ligne</p>
+                  <p className="text-[11px] text-muted-foreground">{tc("Assistant Vitalio · en ligne")}</p>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  aria-label="Fermer"
+                  aria-label={tc("Fermer")}
                   className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted hover:bg-accent/20 transition-colors"
                 >
                   <X className="h-4 w-4" />
@@ -309,7 +312,7 @@ export const AssistantWidget = () => {
 
                 {/* Suggestions */}
                 {messages.length === 1 && !loading && (
-                  <div className="flex flex-wrap gap-2 pt-2" role="list" aria-label="Suggestions">
+                  <div className="flex flex-wrap gap-2 pt-2" role="list" aria-label={tc("Suggestions")}>
                     {SUGGESTIONS.map((s) => (
                       <button
                         key={s}
@@ -343,14 +346,14 @@ export const AssistantWidget = () => {
                         send(input);
                       }
                     }}
-                    placeholder="Écris ta question…"
+                    placeholder={tc("Écris ta question…")}
                     rows={1}
                     className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground max-h-32"
                   />
                   <button
                     type="submit"
                     disabled={loading || !input.trim()}
-                    aria-label="Envoyer"
+                    aria-label={tc("Envoyer")}
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground shadow-glow transition-opacity disabled:opacity-40"
                   >
                     {loading ? (

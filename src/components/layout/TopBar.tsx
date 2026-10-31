@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -19,6 +21,7 @@ const formatTime = (iso: string) => {
 };
 
 export const TopBar = () => {
+  useTranslation();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<AppNotification[]>([]);
 
@@ -43,7 +46,7 @@ export const TopBar = () => {
           {/* Logo Vitala */}
           <Link
             to="/"
-            aria-label="Vitala — accueil"
+            aria-label={tc("Vitala — accueil")}
             className="flex h-11 w-11 items-center justify-center rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <motion.span
@@ -57,7 +60,7 @@ export const TopBar = () => {
           <div className="flex items-center gap-2">
             <Link
               to="/radar"
-              aria-label="Mon radar"
+              aria-label={tc("Mon radar")}
               className="flex h-11 w-11 items-center justify-center rounded-2xl glass text-foreground/80 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Radar className="h-4.5 w-4.5" strokeWidth={2.2} />
@@ -66,7 +69,7 @@ export const TopBar = () => {
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <button
-                  aria-label={unread > 0 ? `Notifications, ${unread} non lues` : "Notifications"}
+                  aria-label={unread > 0 ? `Notifications, ${unread} non lues` : tc("Notifications")}
                   className="relative flex h-11 w-11 items-center justify-center rounded-2xl glass shadow-float text-foreground transition-colors hover:text-primary outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <Bell className="h-4.5 w-4.5" strokeWidth={2.2} />
@@ -86,12 +89,12 @@ export const TopBar = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-sm">
                 <SheetHeader>
-                  <SheetTitle>Notifications</SheetTitle>
+                  <SheetTitle>{tc("Notifications")}</SheetTitle>
                 </SheetHeader>
                 <div className="mt-4 space-y-2" aria-live="polite">
                   {items.length === 0 ? (
                     <p className="py-10 text-center text-sm text-muted-foreground">
-                      Rien pour l'instant. On te prévient dès que quelque chose bouge.
+                      {tc("Rien pour l'instant. On te prévient dès que quelque chose bouge.")}
                     </p>
                   ) : (
                     items.map((n) => (
@@ -109,7 +112,7 @@ export const TopBar = () => {
             {/* Profil */}
             <Link
               to="/profile"
-              aria-label="Mon profil"
+              aria-label={tc("Mon profil")}
               className="flex h-11 w-11 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <motion.div
@@ -118,7 +121,7 @@ export const TopBar = () => {
                 className="overflow-hidden rounded-full ring-1 ring-border/60"
               >
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={avatarImg} alt="Avatar du profil" />
+                  <AvatarImage src={avatarImg} alt={tc("Avatar du profil")} />
                   <AvatarFallback className="bg-gradient-to-br from-primary/80 to-primary-glow text-primary-foreground">
                     <User className="h-4 w-4" strokeWidth={2.4} />
                   </AvatarFallback>

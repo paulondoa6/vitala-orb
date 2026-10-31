@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { motion } from "framer-motion";
 import { ScanLine } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -7,11 +9,12 @@ interface ScanButtonProps {
 }
 
 export const ScanButton = ({ active }: ScanButtonProps) => {
+  useTranslation();
   return (
     <div className="relative -mt-8 flex flex-1 items-start justify-center">
       <Link
         to="/scan"
-        aria-label="Lancer un scan"
+        aria-label={tc("Lancer un scan")}
         role="tab"
         aria-selected={active}
         className="relative block rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
@@ -37,6 +39,7 @@ type VerifyState =
   | { phase: "ready" };
 
 const BoiteDetail = () => {
+  useTranslation();
   const { uuid = "" } = useParams();
   const navigate = useNavigate();
   const [boite, setBoite] = useState<Boite | null>(null);
@@ -45,13 +48,13 @@ const BoiteDetail = () => {
     phase: "verifying",
     step: "format",
     progress: 10,
-    label: "Vérification du numéro unique…",
+    label: tc("Vérification du numéro unique…"),
   });
 
   useEffect(() => {
     let cancelled = false;
     const run = async () => {
-      setVerify({ phase: "verifying", step: "format", progress: 15, label: "Vérification du numéro unique…" });
+      setVerify({ phase: "verifying", step: "format", progress: 15, label: tc("Vérification du numéro unique…") });
       await new Promise((r) => setTimeout(r, 200));
       if (cancelled) return;
       if (!isValidBoiteUuid(uuid)) {
@@ -62,7 +65,7 @@ const BoiteDetail = () => {
         });
         return;
       }
-      setVerify({ phase: "verifying", step: "lookup", progress: 55, label: "Chargement de la salle correspondante…" });
+      setVerify({ phase: "verifying", step: "lookup", progress: 55, label: tc("Chargement de la salle correspondante…") });
       const found = await getBoite(uuid);
       if (cancelled) return;
       if (!found) {
@@ -74,11 +77,11 @@ const BoiteDetail = () => {
         return;
       }
       setBoite(found);
-      setVerify({ phase: "verifying", step: "ready", progress: 100, label: "Espace validée !" });
+      setVerify({ phase: "verifying", step: "ready", progress: 100, label: tc("Espace validée !") });
       await new Promise((r) => setTimeout(r, 350));
       if (cancelled) return;
       setVerify({ phase: "ready" });
-      toast.success("Salle chargée", { description: `Numéro ${found.uuid}` });
+      toast.success(tc("Salle chargée"), { description: `Numéro ${found.uuid}` });
     };
     run();
     return () => {
@@ -95,7 +98,7 @@ const BoiteDetail = () => {
             <QRCodeCanvas value={generateShareLink(uuid || "------")} size={168} level="M" />
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Numéro à vérifier</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{tc("Numéro à vérifier")}</p>
             <p className="font-mono text-2xl font-bold tracking-[0.3em]">{uuid || "------"}</p>
           </div>
           <div
@@ -126,7 +129,7 @@ const BoiteDetail = () => {
             onClick={() => navigate("/scan")}
             className="rounded-xl text-xs text-muted-foreground"
           >
-            <ScanLine className="mr-1 h-3.5 w-3.5" /> Scanner un autre QR
+            <ScanLine className="mr-1 h-3.5 w-3.5" /> {tc("Scanner un autre QR")}
           </Button>
         </div>
       </AppShell>
@@ -142,7 +145,7 @@ const BoiteDetail = () => {
           </div>
           <div className="space-y-1">
             <p className="text-lg font-semibold">
-              {verify.reason === "format" ? "Numéro invalide" : "Espace introuvable"}
+              {verify.reason === "format" ? tc("Numéro invalide") : tc("Espace introuvable")}
             </p>
             <p className="max-w-sm text-sm text-muted-foreground">{verify.message}</p>
           </div>
@@ -151,13 +154,13 @@ const BoiteDetail = () => {
               onClick={() => navigate("/scan")}
               className="h-11 w-full rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow"
             >
-              <ScanLine className="mr-1 h-4 w-4" /> Scanner un QR code
+              <ScanLine className="mr-1 h-4 w-4" /> {tc("Scanner un QR code")}
             </Button>
             <Link
               to="/create"
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"
             >
-              ou créer un nouvel Espace
+              {tc("ou créer un nouvel Espace")}
             </Link>
           </div>
         </div>
@@ -173,14 +176,14 @@ const BoiteDetail = () => {
   const copy = async () => {
     await navigator.clipboard.writeText(link);
     setCopied(true);
-    toast.success("Lien copié");
+    toast.success(tc("Lien copié"));
     setTimeout(() => setCopied(false), 1800);
   };
 
   const shareNative = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: boite.name ?? "Espace", text: shareText, url: link });
+        await navigator.share({ title: boite.name ?? tc("Espace"), text: shareText, url: link });
       } catch {
         /* cancelled */
       }
@@ -198,13 +201,13 @@ const BoiteDetail = () => {
         <button
           onClick={() => navigate("/")}
           className="flex h-9 w-9 items-center justify-center rounded-xl glass shadow-float"
-          aria-label="Retour"
+          aria-label={tc("Retour")}
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="truncate text-xl font-semibold tracking-tight">{boite.name ?? "Espace"}</h1>
-          <p className="text-[11px] text-muted-foreground">Numéro unique · {boite.uuid}</p>
+          <h1 className="truncate text-xl font-semibold tracking-tight">{boite.name ?? tc("Espace")}</h1>
+          <p className="text-[11px] text-muted-foreground">{tc("Numéro unique ·")} {boite.uuid}</p>
         </div>
       </div>
 
@@ -224,7 +227,7 @@ const BoiteDetail = () => {
               )}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-lg font-semibold">{boite.name ?? "Espace sans nom"}</p>
+              <p className="truncate text-lg font-semibold">{boite.name ?? tc("Espace sans nom")}</p>
               <p className="text-xs opacity-80">
                 {boite.types.length} type{boite.types.length > 1 ? "s" : ""} · créée{" "}
                 {new Date(boite.createdAt).toLocaleDateString()}
@@ -239,7 +242,7 @@ const BoiteDetail = () => {
             <QRCodeCanvas value={link} size={168} level="M" includeMargin={false} />
           </div>
           <div className="text-center">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Numéro public</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{tc("Numéro public")}</p>
             <p className="font-mono text-2xl font-bold tracking-[0.3em]">{boite.uuid}</p>
           </div>
         </div>
@@ -251,7 +254,7 @@ const BoiteDetail = () => {
             <button
               onClick={copy}
               className="ml-auto flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground transition-colors hover:bg-primary/10"
-              aria-label="Copier le lien"
+              aria-label={tc("Copier le lien")}
             >
               {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
             </button>
@@ -260,7 +263,7 @@ const BoiteDetail = () => {
           <div className="grid grid-cols-3 gap-2 pt-1">
             <Button onClick={copy} variant="outline" className="h-11 rounded-xl">
               <Copy className="mr-1 h-4 w-4" />
-              Copier
+              {tc("Copier")}
             </Button>
             <a
               href={waUrl}
@@ -290,7 +293,7 @@ const BoiteDetail = () => {
 
           {typeof navigator !== "undefined" && "share" in navigator && (
             <Button onClick={shareNative} variant="ghost" className="h-9 w-full rounded-xl text-xs">
-              <Share2 className="mr-1 h-3.5 w-3.5" /> Partager via…
+              <Share2 className="mr-1 h-3.5 w-3.5" /> {tc("Partager via…")}
             </Button>
           )}
         </div>
@@ -308,12 +311,12 @@ const BoiteDetail = () => {
       <section className="mt-4 rounded-2xl glass shadow-float p-4">
         <div className="mb-3 flex items-center gap-2">
           <Wrench className="h-4 w-4 text-primary" />
-          <p className="text-sm font-semibold">Services</p>
+          <p className="text-sm font-semibold">{tc("Services")}</p>
           <span className="ml-auto text-[11px] text-muted-foreground">{boite.services.length}</span>
         </div>
         {boite.services.length === 0 ? (
           <p className="rounded-xl border border-dashed border-border/60 p-3 text-center text-xs text-muted-foreground">
-            Aucun service
+            {tc("Aucun service")}
           </p>
         ) : (
           <ul className="space-y-2">
@@ -331,12 +334,12 @@ const BoiteDetail = () => {
       <section className="mt-4 rounded-2xl glass shadow-float p-4">
         <div className="mb-3 flex items-center gap-2">
           <Users className="h-4 w-4 text-primary" />
-          <p className="text-sm font-semibold">Personnel</p>
+          <p className="text-sm font-semibold">{tc("Personnel")}</p>
           <span className="ml-auto text-[11px] text-muted-foreground">{boite.members.length}</span>
         </div>
         {boite.members.length === 0 ? (
           <p className="rounded-xl border border-dashed border-border/60 p-3 text-center text-xs text-muted-foreground">
-            Personne invité
+            {tc("Personne invité")}
           </p>
         ) : (
           <ul className="space-y-2">
@@ -356,7 +359,7 @@ const BoiteDetail = () => {
                 <div className="min-w-0">
                   <p className="truncate text-sm">{m.email}</p>
                   <p className="text-[10px] text-muted-foreground">
-                    {m.role === "admin" ? "Admin" : "Modérateur"}
+                    {m.role === "admin" ? tc("Admin") : tc("Modérateur")}
                   </p>
                 </div>
               </li>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,6 +70,7 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 const CreatePage = () => {
+  useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2>(1);
@@ -95,11 +98,11 @@ const CreatePage = () => {
   const addMember = () => {
     const email = memberDraft.email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast({ title: "Email invalide", variant: "destructive" });
+      toast({ title: tc("Email invalide"), variant: "destructive" });
       return;
     }
     if (members.some((m) => m.email === email)) {
-      toast({ title: "Déjà invité", variant: "destructive" });
+      toast({ title: tc("Déjà invité"), variant: "destructive" });
       return;
     }
     setMembers((m) => [...m, { id: `mb_${Date.now().toString(36)}`, email, role: memberDraft.role, invitedAt: Date.now() }]);
@@ -200,7 +203,7 @@ const CreatePage = () => {
   const onLogo = async (file?: File) => {
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      toast({ title: "Logo trop lourd", description: "Max 2 Mo.", variant: "destructive" });
+      toast({ title: tc("Logo trop lourd"), description: tc("Max 2 Mo."), variant: "destructive" });
       return;
     }
     const b64 = await fileToBase64(file);
@@ -209,7 +212,7 @@ const CreatePage = () => {
 
   const geolocate = () => {
     if (!("geolocation" in navigator)) {
-      toast({ title: "Géolocalisation indisponible", variant: "destructive" });
+      toast({ title: tc("Géolocalisation indisponible"), variant: "destructive" });
       return;
     }
     setGeoLoading(true);
@@ -220,11 +223,11 @@ const CreatePage = () => {
         const label = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
         if (!values.locationLabel) setValue("locationLabel", label, { shouldDirty: true });
         setGeoLoading(false);
-        toast({ title: "Position détectée", description: label });
+        toast({ title: tc("Position détectée"), description: label });
       },
       (err) => {
         setGeoLoading(false);
-        toast({ title: "Échec géolocalisation", description: err.message, variant: "destructive" });
+        toast({ title: tc("Échec géolocalisation"), description: err.message, variant: "destructive" });
       },
       { enableHighAccuracy: true, timeout: 10000 },
     );
@@ -238,7 +241,7 @@ const CreatePage = () => {
     submittingRef.current = true;
     setSubmitting(true);
     setError(null);
-    let currentLabel = "Préparation des données…";
+    let currentLabel = tc("Préparation des données…");
     setProgress(4);
     setProgressLabel(currentLabel);
     try {
@@ -266,14 +269,14 @@ const CreatePage = () => {
         },
       );
 
-      currentLabel = "Finalisation…";
+      currentLabel = tc("Finalisation…");
       setProgress(97);
       setProgressLabel(currentLabel);
       await clearDraft();
 
       setProgress(100);
-      setProgressLabel("Espace créée !");
-      toast({ title: "Espace créée !", description: `Numéro unique : ${boite.uuid}` });
+      setProgressLabel(tc("Espace créée !"));
+      toast({ title: tc("Espace créée !"), description: `Numéro unique : ${boite.uuid}` });
       await new Promise((r) => setTimeout(r, 350));
       submittedRef.current = true;
       navigate(`/boite/${boite.uuid}`);
@@ -285,7 +288,7 @@ const CreatePage = () => {
       setSubmitting(false);
       submittingRef.current = false;
       toast({
-        title: "Échec de création",
+        title: tc("Échec de création"),
         description: `${currentLabel} — ${message}`,
         variant: "destructive",
       });
@@ -299,12 +302,12 @@ const CreatePage = () => {
         <button
           onClick={() => (step === 2 ? setStep(1) : navigate(-1))}
           className="flex h-9 w-9 items-center justify-center rounded-xl glass shadow-float"
-          aria-label="Retour"
+          aria-label={tc("Retour")}
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
         <div className="flex-1">
-          <h1 className="text-xl font-semibold tracking-tight">Création d'Espace</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{tc("Création d'Espace")}</h1>
           <p className="text-[11px] text-muted-foreground">Étape {step}/2 · auto-sauvegarde</p>
         </div>
         <div className="flex items-center gap-1.5">
@@ -325,9 +328,9 @@ const CreatePage = () => {
             className="mt-6 space-y-6"
           >
             <header>
-              <h2 className="text-2xl font-semibold tracking-tight">Quel type d'Espace voulez-vous créer ?</h2>
+              <h2 className="text-2xl font-semibold tracking-tight">{tc("Quel type d'Espace voulez-vous créer ?")}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Sélectionne un ou plusieurs types. Tu pourras ajouter des détails ensuite.
+                {tc("Sélectionne un ou plusieurs types. Tu pourras ajouter des détails ensuite.")}
               </p>
             </header>
 
@@ -390,12 +393,12 @@ const CreatePage = () => {
                   {/* Name */}
                   <div className="rounded-2xl glass shadow-float p-4 space-y-2">
                     <Label htmlFor="name" className="flex items-center gap-2 text-sm">
-                      Avez-vous un nom ?
-                      {needsName && <span className="text-[10px] font-medium text-primary">requis</span>}
+                      {tc("Avez-vous un nom ?")}
+                      {needsName && <span className="text-[10px] font-medium text-primary">{tc("requis")}</span>}
                     </Label>
                     <Input
                       id="name"
-                      placeholder="Ex. Vitalio Studio"
+                      placeholder={tc("Ex. Vitalio Studio")}
                       maxLength={80}
                       {...register("name")}
                       className="bg-background/60"
@@ -407,11 +410,11 @@ const CreatePage = () => {
 
                   {/* Logo */}
                   <div className="rounded-2xl glass shadow-float p-4">
-                    <Label className="text-sm">Un logo ?</Label>
+                    <Label className="text-sm">{tc("Un logo ?")}</Label>
                     <div className="mt-3 flex items-center gap-3">
                       <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-muted">
                         {values.logo ? (
-                          <img src={values.logo} alt="Logo" className="h-full w-full object-cover" />
+                          <img src={values.logo} alt={tc("Logo")} className="h-full w-full object-cover" />
                         ) : (
                           <Sparkles className="h-5 w-5 text-muted-foreground" />
                         )}
@@ -432,7 +435,7 @@ const CreatePage = () => {
                           className="rounded-xl"
                         >
                           <Upload className="mr-1 h-3.5 w-3.5" />
-                          {values.logo ? "Changer" : "Importer"}
+                          {values.logo ? tc("Changer") : tc("Importer")}
                         </Button>
                         {values.logo && (
                           <Button
@@ -442,10 +445,10 @@ const CreatePage = () => {
                             onClick={() => setValue("logo", undefined, { shouldDirty: true })}
                             className="ml-1 rounded-xl text-muted-foreground"
                           >
-                            <X className="mr-1 h-3.5 w-3.5" /> Retirer
+                            <X className="mr-1 h-3.5 w-3.5" /> {tc("Retirer")}
                           </Button>
                         )}
-                        <p className="text-[10px] text-muted-foreground">PNG, JPG · max 2 Mo</p>
+                        <p className="text-[10px] text-muted-foreground">{tc("PNG, JPG · max 2 Mo")}</p>
                       </div>
                     </div>
                   </div>
@@ -453,7 +456,7 @@ const CreatePage = () => {
                   {/* Location */}
                   <div className="rounded-2xl glass shadow-float p-4 space-y-2">
                     <Label htmlFor="loc" className="text-sm">
-                      Vous êtes localisable ?
+                      {tc("Vous êtes localisable ?")}
                     </Label>
                     <div className="flex gap-2">
                       <Controller
@@ -462,7 +465,7 @@ const CreatePage = () => {
                         render={({ field }) => (
                           <Input
                             id="loc"
-                            placeholder="Ville, adresse ou coordonnées"
+                            placeholder={tc("Ville, adresse ou coordonnées")}
                             {...field}
                             value={field.value ?? ""}
                             className="bg-background/60"
@@ -485,7 +488,7 @@ const CreatePage = () => {
                     </div>
                     {values.lat && values.lng && (
                       <p className="text-[10px] text-muted-foreground">
-                        Position : {values.lat.toFixed(4)}, {values.lng.toFixed(4)}
+                        {tc("Position :")} {values.lat.toFixed(4)}, {values.lng.toFixed(4)}
                       </p>
                     )}
                   </div>
@@ -501,7 +504,7 @@ const CreatePage = () => {
                 disabled={!formState.isValid}
                 className="h-12 w-full rounded-2xl bg-gradient-primary text-primary-foreground shadow-glow disabled:opacity-50"
               >
-                Suivant
+                {tc("Suivant")}
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
@@ -516,8 +519,8 @@ const CreatePage = () => {
             className="mt-6 space-y-4"
           >
             <header>
-              <h2 className="text-2xl font-semibold tracking-tight">Services & équipe</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Configure tes services et invite ton personnel.</p>
+              <h2 className="text-2xl font-semibold tracking-tight">{tc("Services & équipe")}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{tc("Configure tes services et invite ton personnel.")}</p>
             </header>
 
             {/* Récap */}
@@ -542,8 +545,8 @@ const CreatePage = () => {
             <section className="rounded-2xl glass shadow-float p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-semibold">Vos services</p>
-                  <p className="text-[11px] text-muted-foreground">Ajoute ce que tu proposes</p>
+                  <p className="text-sm font-semibold">{tc("Vos services")}</p>
+                  <p className="text-[11px] text-muted-foreground">{tc("Ajoute ce que tu proposes")}</p>
                 </div>
                 <Button
                   type="button"
@@ -552,7 +555,7 @@ const CreatePage = () => {
                   onClick={addService}
                   className="rounded-xl"
                 >
-                  <Plus className="mr-1 h-3.5 w-3.5" /> Ajouter
+                  <Plus className="mr-1 h-3.5 w-3.5" /> {tc("Ajouter")}
                 </Button>
               </div>
 
@@ -572,7 +575,7 @@ const CreatePage = () => {
                       <Input
                         value={svc.name}
                         onChange={(e) => updateService(svc.id, { name: e.target.value })}
-                        placeholder="Nom du service"
+                        placeholder={tc("Nom du service")}
                         maxLength={80}
                         className="h-9 bg-background/60"
                       />
@@ -581,7 +584,7 @@ const CreatePage = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeService(svc.id)}
-                        aria-label="Supprimer"
+                        aria-label={tc("Supprimer")}
                         className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -590,7 +593,7 @@ const CreatePage = () => {
                     <Textarea
                       value={svc.description ?? ""}
                       onChange={(e) => updateService(svc.id, { description: e.target.value })}
-                      placeholder="Description courte"
+                      placeholder={tc("Description courte")}
                       maxLength={400}
                       rows={2}
                       className="resize-none bg-background/60 text-sm"
@@ -601,7 +604,7 @@ const CreatePage = () => {
 
               {services.length === 0 && (
                 <p className="rounded-xl border border-dashed border-border/60 p-3 text-center text-xs text-muted-foreground">
-                  Aucun service · facultatif
+                  {tc("Aucun service · facultatif")}
                 </p>
               )}
             </section>
@@ -609,8 +612,8 @@ const CreatePage = () => {
             {/* Personnel */}
             <section className="rounded-2xl glass shadow-float p-4 space-y-3">
               <div>
-                <p className="text-sm font-semibold">Votre personnel</p>
-                <p className="text-[11px] text-muted-foreground">Invite par email · rôle Admin ou Modérateur</p>
+                <p className="text-sm font-semibold">{tc("Votre personnel")}</p>
+                <p className="text-[11px] text-muted-foreground">{tc("Invite par email · rôle Admin ou Modérateur")}</p>
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -620,7 +623,7 @@ const CreatePage = () => {
                     type="email"
                     value={memberDraft.email}
                     onChange={(e) => setMemberDraft((d) => ({ ...d, email: e.target.value }))}
-                    placeholder="email@exemple.com"
+                    placeholder={tc("email@exemple.com")}
                     className="h-10 bg-background/60 pl-9"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -644,12 +647,12 @@ const CreatePage = () => {
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        {r === "admin" ? "Admin" : "Modérateur"}
+                        {r === "admin" ? tc("Admin") : tc("Modérateur")}
                       </button>
                     ))}
                   </div>
                   <Button type="button" onClick={addMember} className="rounded-xl">
-                    <Send className="mr-1 h-3.5 w-3.5" /> Inviter
+                    <Send className="mr-1 h-3.5 w-3.5" /> {tc("Inviter")}
                   </Button>
                 </div>
               </div>
@@ -674,7 +677,7 @@ const CreatePage = () => {
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium">{m.email}</p>
                       <p className="text-[10px] capitalize text-muted-foreground">
-                        {m.role === "admin" ? "Admin" : "Modérateur"}
+                        {m.role === "admin" ? tc("Admin") : tc("Modérateur")}
                       </p>
                     </div>
                     <Button
@@ -682,7 +685,7 @@ const CreatePage = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeMember(m.id)}
-                      aria-label="Retirer"
+                      aria-label={tc("Retirer")}
                       className="h-8 w-8 text-muted-foreground hover:text-destructive"
                     >
                       <X className="h-4 w-4" />
@@ -702,10 +705,10 @@ const CreatePage = () => {
                   role="alert"
                   className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm"
                 >
-                  <p className="font-semibold text-destructive">Échec à l'étape : {error.label}</p>
+                  <p className="font-semibold text-destructive">{tc("Échec à l'étape :")} {error.label}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{error.message}</p>
                   <p className="mt-1 text-[11px] text-muted-foreground">
-                    Tes informations sont conservées. Tu peux réessayer.
+                    {tc("Tes informations sont conservées. Tu peux réessayer.")}
                   </p>
                   <div className="mt-3 flex gap-2">
                     <Button
@@ -714,7 +717,7 @@ const CreatePage = () => {
                       onClick={onSubmit}
                       className="rounded-xl bg-gradient-primary text-primary-foreground"
                     >
-                      Réessayer
+                      {tc("Réessayer")}
                     </Button>
                     <Button
                       type="button"
@@ -723,7 +726,7 @@ const CreatePage = () => {
                       onClick={() => setError(null)}
                       className="rounded-xl"
                     >
-                      Fermer
+                      {tc("Fermer")}
                     </Button>
                   </div>
                 </motion.div>
@@ -751,11 +754,11 @@ const CreatePage = () => {
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {progress < 100 ? `Création… ${progress}%` : "Redirection…"}
+                    {progress < 100 ? `Création… ${progress}%` : tc("Redirection…")}
                   </>
                 ) : (
                   <>
-                    Créer l'Espace
+                    {tc("Créer l'Espace")}
                     <Sparkles className="ml-1 h-4 w-4" />
                   </>
                 )}
@@ -799,7 +802,7 @@ const CreatePage = () => {
                 aria-atomic="true"
                 className="text-sm font-semibold"
               >
-                {progressLabel || "Création en cours…"}
+                {progressLabel || tc("Création en cours…")}
               </p>
               <div
                 className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted"
@@ -825,7 +828,7 @@ const CreatePage = () => {
                 {progress}%
               </p>
               <span className="sr-only" aria-live="assertive">
-                {progress === 100 ? "Création terminée, redirection en cours" : ""}
+                {progress === 100 ? tc("Création terminée, redirection en cours") : ""}
               </span>
             </motion.div>
           </motion.div>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import { tc } from "@/core/copy";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { LayoutGrid, ChevronRight, Plus, RefreshCw, Sparkles } from "lucide-react";
@@ -6,6 +8,7 @@ import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espa
 import { SyncBadge } from "@/components/layout/SyncBadge";
 
 export const BoitesCard = () => {
+  useTranslation();
   const [boites, setBoites] = useState<Boite[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -17,9 +20,9 @@ export const BoitesCard = () => {
     } catch {
       setBoites(null);
       setFailed(true);
-      toast.error("Tes Espaces n'ont pas pu être chargés", {
-        description: "Vérifie ta connexion, puis réessaie.",
-        action: { label: "Réessayer", onClick: () => void load() },
+      toast.error(tc("Tes Espaces n'ont pas pu être chargés"), {
+        description: tc("Vérifie ta connexion, puis réessaie."),
+        action: { label: tc("Réessayer"), onClick: () => void load() },
       });
     }
   }, []);
@@ -33,15 +36,15 @@ export const BoitesCard = () => {
       <section className="mt-6">
         <div className="glass shadow-float flex items-center gap-3 rounded-2xl px-4 py-3">
           <div className="flex-1">
-            <p className="text-sm font-semibold">Mes Espaces</p>
-            <p className="text-[11px] text-muted-foreground">Chargement impossible pour le moment.</p>
+            <p className="text-sm font-semibold">{tc("Mes Espaces")}</p>
+            <p className="text-[11px] text-muted-foreground">{tc("Chargement impossible pour le moment.")}</p>
           </div>
           <button
             type="button"
             onClick={() => void load()}
             className="inline-flex items-center gap-1 rounded-xl bg-primary/10 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <RefreshCw className="h-3.5 w-3.5" /> Réessayer
+            <RefreshCw className="h-3.5 w-3.5" /> {tc("Réessayer")}
           </button>
         </div>
       </section>
@@ -53,9 +56,9 @@ export const BoitesCard = () => {
   return (
     <section className="mt-6">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold tracking-tight">Mes Espaces</h3>
+        <h3 className="text-sm font-semibold tracking-tight">{tc("Mes Espaces")}</h3>
         <Link to="/create" className="text-[11px] font-medium text-primary inline-flex items-center gap-0.5">
-          Voir tout <ChevronRight className="h-3 w-3" />
+          {tc("Voir tout")} <ChevronRight className="h-3 w-3" />
         </Link>
       </div>
 
@@ -64,7 +67,7 @@ export const BoitesCard = () => {
           to="/create"
           className="glass shadow-float flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border/60 py-5 text-sm font-medium text-muted-foreground hover:bg-accent/10 transition-colors"
         >
-          <Plus className="h-4 w-4" /> Créer un Espace
+          <Plus className="h-4 w-4" /> {tc("Créer un Espace")}
         </Link>
       ) : (
         <div className="space-y-2">
@@ -82,7 +85,7 @@ export const BoitesCard = () => {
                 )}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{b.name ?? "Espace sans nom"}</p>
+                <p className="truncate text-sm font-semibold">{b.name ?? tc("Espace sans nom")}</p>
                 <div className="mt-0.5 flex items-center gap-2">
                   <span className="font-mono text-[10px] tracking-widest text-muted-foreground">{b.uuid}</span>
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -100,7 +103,7 @@ export const BoitesCard = () => {
             to="/create"
             className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border/60 py-2.5 text-xs font-medium text-muted-foreground hover:bg-accent/10 transition-colors"
           >
-            <LayoutGrid className="h-3.5 w-3.5" /> Nouvel Espace
+            <LayoutGrid className="h-3.5 w-3.5" /> {tc("Nouvel Espace")}
           </Link>
         </div>
       )}
