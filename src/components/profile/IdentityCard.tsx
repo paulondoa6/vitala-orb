@@ -70,7 +70,7 @@ export const IdentityCard = () => {
         ],
       });
       setEditing(false);
-      toast.success(`C'est noté, ${parsed.data.firstName}.`);
+      toast.success(tc("C'est noté, {{name}}.", { name: parsed.data.firstName }));
     } catch {
       toast.error(tc("Ton profil n'a pas pu être enregistré. Réessaie."));
     } finally {
@@ -105,7 +105,7 @@ export const IdentityCard = () => {
       <div className="relative flex items-center gap-4">
         <div className="relative">
           <Avatar className="h-20 w-20 shadow-glow ring-4 ring-background">
-            <AvatarImage src={avatar} alt={identity?.firstName ? `Avatar de ${identity.firstName}` : "Avatar"} />
+            <AvatarImage src={avatar} alt={identity?.firstName ? tc("Avatar de {{name}}", { name: identity.firstName }) : "Avatar"} />
             <AvatarFallback className="bg-gradient-primary text-2xl text-primary-foreground">
               {initial}
             </AvatarFallback>
@@ -155,7 +155,7 @@ export const IdentityCard = () => {
               />
               {error && (
                 <p id="firstName-error" role="alert" className="mt-1 text-[11px] text-destructive">
-                  {error}
+                  {tc(error)}
                 </p>
               )}
             </div>
@@ -167,7 +167,7 @@ export const IdentityCard = () => {
               <p className="mt-0.5 text-xs text-muted-foreground">
                 {identity?.firstName
                   ? identity.city
-                    ? `Sur Vitalio · ${identity.city}`
+                    ? tc("Sur Vitalio · {{city}}", { city: identity.city })
                     : tc("Sur Vitalio, en local et hors ligne")
                   : tc("Ajoute ton prénom pour personnaliser l'app")}
               </p>

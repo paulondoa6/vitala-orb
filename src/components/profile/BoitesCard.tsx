@@ -8,7 +8,7 @@ import { listBoitesByOwner, getCurrentOwnerId, type Boite } from "@/modules/espa
 import { SyncBadge } from "@/components/layout/SyncBadge";
 
 export const BoitesCard = () => {
-  useTranslation();
+  const { t } = useTranslation();
   const [boites, setBoites] = useState<Boite[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -89,7 +89,7 @@ export const BoitesCard = () => {
                 <div className="mt-0.5 flex items-center gap-2">
                   <span className="font-mono text-[10px] tracking-widest text-muted-foreground">{b.uuid}</span>
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-                    {b.types[0]}
+                    {t(`types.${b.types[0]}`, { defaultValue: b.types[0] })}
                     {b.types.length > 1 ? ` +${b.types.length - 1}` : ""}
                   </span>
                 </div>

@@ -38,11 +38,11 @@ const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => { use
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
-              {pulse.members} membre{pulse.members > 1 ? "s" : ""}
+              {tc("{{count}} membres", { count: pulse.members })}
             </span>
             <span className="flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              {pulse.opportunities} opportunité{pulse.opportunities > 1 ? "s" : ""}
+              {tc("{{count}} opportunités", { count: pulse.opportunities })}
             </span>
           </div>
           <div className="mt-2.5 flex items-center gap-2">
@@ -56,7 +56,7 @@ const ZoneRow = ({ pulse, index }: { pulse: ZonePulse; index: number }) => { use
             </div>
             <span className="flex items-center gap-1 text-[10px] font-medium text-primary">
               <Flame className="h-3 w-3" />
-              {activityLabel(pulse.activity)}
+              {tc(activityLabel(pulse.activity))}
             </span>
           </div>
         </div>
@@ -84,7 +84,7 @@ const ZonePage = () => {
 
       {error ? (
         <div className="mt-6">
-          <ErrorState title={tc("Zones indisponibles")} description={error} onRetry={reload} />
+          <ErrorState title={tc("Zones indisponibles")} description={tc(error)} onRetry={reload} />
         </div>
       ) : loading ? (
         <div className="mt-6 space-y-3">
@@ -94,7 +94,7 @@ const ZonePage = () => {
         </div>
       ) : (
         <>
-          <SectionLabel label={`${pulses.length} zones`} trailing={tc("triées par activité")} />
+          <SectionLabel label={tc("{{count}} zones", { count: pulses.length })} trailing={tc("triées par activité")} />
           <div className="mt-3 space-y-3 pb-4">
             {pulses.map((p, i) => (
               <ZoneRow key={p.zone.id} pulse={p} index={i} />

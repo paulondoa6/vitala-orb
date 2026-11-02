@@ -87,7 +87,7 @@ export const IdentityGate = () => {
               {tc("Comment on t'appelle ?")}
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-              Juste ton prénom, pour {pending.reason}. Pas de mot de passe, pas d'e-mail.
+              {tc("Juste ton prénom, pour {{reason}}. Pas de mot de passe, pas d'e-mail.", { reason: tc(pending.reason) })}
             </p>
             <Input
               ref={inputRef}

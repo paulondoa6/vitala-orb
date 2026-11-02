@@ -27,7 +27,7 @@ const ZoneDetail = () => {
     try {
       await joinZone(pulse.zone.id, me.id);
       setJoined(true);
-      toast.success(`Bienvenue dans ${pulse.zone.name}`, {
+      toast.success(tc("Bienvenue dans {{name}}", { name: pulse.zone.name }), {
         description: tc("Tu verras les flashs et les opportunités du quartier en priorité."),
       });
     } finally {
@@ -52,7 +52,7 @@ const ZoneDetail = () => {
         <div className="mt-6">
           <ErrorState
             title={tc("Zone introuvable")}
-            description={error ?? tc("Cette zone n'est plus disponible.")}
+            description={tc(error ?? "Cette zone n'est plus disponible.")}
             onRetry={reload}
           />
         </div>
@@ -85,7 +85,7 @@ const ZoneDetail = () => {
               </div>
               <span className="flex items-center gap-1 text-[11px] font-medium text-primary">
                 <Flame className="h-3.5 w-3.5" />
-                {activityLabel(pulse.activity)}
+                {tc(activityLabel(pulse.activity))}
               </span>
             </div>
 

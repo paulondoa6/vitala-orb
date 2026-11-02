@@ -25,6 +25,7 @@ export interface ScanResult {
   bucket: ResultBucket;
   title: string;
   subtitle: string;
+  count?: number;
   score: number;
   distanceM?: number;
   href: string;
@@ -114,7 +115,8 @@ export const runScan = (input: ScanInput, now = Date.now()): ScanResult[] => {
       kind: "flash",
       bucket: flash.urgency === "urgent" ? "urgence" : "flash",
       title: flash.text,
-      subtitle: `${flash.authorName} · ${flash.replies} réponse${flash.replies > 1 ? "s" : ""}`,
+      subtitle: flash.authorName,
+      count: flash.replies,
       score,
       distanceM: d,
       href: "/flash",
@@ -139,7 +141,8 @@ export const runScan = (input: ScanInput, now = Date.now()): ScanResult[] => {
       kind: "zone",
       bucket: "zone",
       title: zone.name,
-      subtitle: `${zone.city} · ${activeHere} flash${activeHere > 1 ? "s" : ""} en direct`,
+      subtitle: zone.city,
+      count: activeHere,
       score,
       distanceM: d,
       href: `/zone/${zone.id}`,
@@ -163,8 +166,9 @@ export const runScan = (input: ScanInput, now = Date.now()): ScanResult[] => {
       id: `espace-${espace.uuid}`,
       kind: "espace",
       bucket: "recommande",
-      title: espace.name ?? "Espace sans nom",
-      subtitle: `${espace.services.length} service${espace.services.length > 1 ? "s" : ""} · ${espace.uuid}`,
+      title: espace.name ?? "",
+      subtitle: espace.uuid,
+      count: espace.services.length,
       score,
       distanceM: d,
       href: `/espace/${espace.uuid}`,

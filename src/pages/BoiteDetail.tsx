@@ -39,7 +39,7 @@ type VerifyState =
   | { phase: "ready" };
 
 const BoiteDetail = () => {
-  useTranslation();
+  const { i18n } = useTranslation();
   const { uuid = "" } = useParams();
   const navigate = useNavigate();
   const [boite, setBoite] = useState<Boite | null>(null);
@@ -61,7 +61,7 @@ const BoiteDetail = () => {
         setVerify({
           phase: "invalid",
           reason: "format",
-          message: `Le code « ${uuid} » n'est pas un numéro unique valide (6 caractères).`,
+          message: tc("Le code « {{id}} » n'est pas un numéro unique valide (6 caractères).", { id: uuid }),
         });
         return;
       }
@@ -72,7 +72,7 @@ const BoiteDetail = () => {
         setVerify({
           phase: "invalid",
           reason: "notfound",
-          message: `Aucune Espace n'est associée au code ${uuid}.`,
+          message: tc("Aucune Espace n'est associée au code {{id}}.", { id: uuid }),
         });
         return;
       }
@@ -81,13 +81,13 @@ const BoiteDetail = () => {
       await new Promise((r) => setTimeout(r, 350));
       if (cancelled) return;
       setVerify({ phase: "ready" });
-      toast.success(tc("Salle chargée"), { description: `Numéro ${found.uuid}` });
+      toast.success(tc("Salle chargée"), { description: tc("Numéro {{id}}", { id: found.uuid }) });
     };
     run();
     return () => {
       cancelled = true;
     };
-  }, [uuid]);
+  }, [uuid, i18n.resolvedLanguage]);
 
   // Verification screen (loading + scan CTA)
   if (verify.phase === "verifying") {
@@ -171,7 +171,7 @@ const BoiteDetail = () => {
   if (!boite) return null;
 
   const link = generateShareLink(boite.uuid);
-  const shareText = `Découvre mon Espace ${boite.name ?? ""} sur Vitalio`;
+  const shareText = tc("Découvre mon Espace {{name}} sur Vitalio", { name: boite.name ?? "" });
 
   const copy = async () => {
     await navigator.clipboard.writeText(link);
@@ -229,8 +229,7 @@ const BoiteDetail = () => {
             <div className="min-w-0">
               <p className="truncate text-lg font-semibold">{boite.name ?? tc("Espace sans nom")}</p>
               <p className="text-xs opacity-80">
-                {boite.types.length} type{boite.types.length > 1 ? "s" : ""} · créée{" "}
-                {new Date(boite.createdAt).toLocaleDateString()}
+                {tc("{{count}} types · créée le {{date}}", { count: boite.types.length, date: new Date(boite.createdAt).toLocaleDateString(i18n.resolvedLanguage) })}
               </p>
             </div>
           </div>

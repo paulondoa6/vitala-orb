@@ -383,5 +383,35 @@
     "c2eae418a6ca8": "il y a {{count}} min",
     "caebac0aa9a11": "il y a {{count}} h",
     "c141e76eb1286": "il y a {{count}} j"
+  },
+  "types": {
+    "produits": "Produits",
+    "trust": "Trust",
+    "marque": "Marque",
+    "service": "Service"
+  },
+  "categories": {
+    "service": "Service",
+    "produit": "Produit",
+    "aide": "Aide",
+    "info": "Info",
+    "rencontre": "Rencontre"
+  },
+  "validation": {
+    "minName": "Au moins 2 lettres",
+    "maxName": "30 caractères maximum",
+    "minChars": "Au moins 2 caractères",
+    "max40": "40 caractères max",
+    "max60": "60 caractères max"
+  },
+  "creation": {
+    "validate": "On vérifie tes infos…",
+    "uuid": "Création de ton code unique…",
+    "prepare": "Préparation de ton espace…",
+    "persist": "Enregistrement…",
+    "verify": "Dernière vérification…",
+    "done": "Ton espace est prêt !",
+    "typeRequired": "Choisis au moins un type d'espace",
+    "notConfirmed": "L'enregistrement n'a pas pu être confirmé"
   }
 }

@@ -61,14 +61,14 @@ export const NotificationPreferences = () => {
               <Icon className="h-4 w-4" />
             </span>
             <span className="flex-1">
-              <span className="block text-sm font-medium">{label}</span>
-              <span className="block text-[11px] text-muted-foreground">{hint}</span>
+              <span className="block text-sm font-medium">{tc(label)}</span>
+              <span className="block text-[11px] text-muted-foreground">{tc(hint)}</span>
             </span>
             <Switch
               id={`notif-${key}`}
               checked={prefs[key]}
               onCheckedChange={(v) => toggle(key, v)}
-              aria-label={label}
+              aria-label={tc(label)}
             />
           </label>
         ))}
