@@ -57,7 +57,7 @@ const Home = () => {
       <SectionLabel label={tc("Par où tu commences ?")} />
 
       {error && !data ? (
-        <ErrorState description={error} onRetry={reload} className="mt-4" />
+        <ErrorState description={tc(error)} onRetry={reload} className="mt-4" />
       ) : (
         <div className="mt-4 grid grid-cols-2 gap-3 pb-4">
           {!data

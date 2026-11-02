@@ -262,10 +262,10 @@ const CreatePage = () => {
           members,
         },
         (s) => {
-          currentLabel = s.label;
+          currentLabel = tc(s.label);
           // Cap at 95% so the finalisation step can land on 100
           setProgress(Math.min(95, s.progress));
-          setProgressLabel(s.label);
+          setProgressLabel(tc(s.label));
         },
       );
 
@@ -276,12 +276,12 @@ const CreatePage = () => {
 
       setProgress(100);
       setProgressLabel(tc("Espace créée !"));
-      toast({ title: tc("Espace créée !"), description: `Numéro unique : ${boite.uuid}` });
+      toast({ title: tc("Espace créée !"), description: tc("Numéro unique : {{id}}", { id: boite.uuid }) });
       await new Promise((r) => setTimeout(r, 350));
       submittedRef.current = true;
       navigate(`/boite/${boite.uuid}`);
     } catch (e) {
-      const message = e instanceof Error ? e.message : String(e);
+      const message = tc(e instanceof Error ? e.message : "Erreur inconnue");
       setError({ label: currentLabel, message });
       setProgress(0);
       setProgressLabel("");
@@ -308,7 +308,7 @@ const CreatePage = () => {
         </button>
         <div className="flex-1">
           <h1 className="text-xl font-semibold tracking-tight">{tc("Création d'Espace")}</h1>
-          <p className="text-[11px] text-muted-foreground">Étape {step}/2 · auto-sauvegarde</p>
+          <p className="text-[11px] text-muted-foreground">{tc("Étape {{step}}/2 · auto-sauvegarde", { step })}</p>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={cn("h-1.5 w-6 rounded-full transition-colors", step >= 1 ? "bg-primary" : "bg-muted")} />
@@ -362,8 +362,8 @@ const CreatePage = () => {
                       <Icon className="h-5 w-5" strokeWidth={2.2} />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold leading-tight">{label}</p>
-                      <p className="text-[11px] text-muted-foreground">{hint}</p>
+                      <p className="text-sm font-semibold leading-tight">{tc(label)}</p>
+                      <p className="text-[11px] text-muted-foreground">{tc(hint)}</p>
                     </div>
                     <span
                       className={cn(
@@ -378,7 +378,7 @@ const CreatePage = () => {
               })}
             </div>
             {formState.errors.types && (
-              <p className="text-xs text-destructive">{formState.errors.types.message as string}</p>
+              <p className="text-xs text-destructive">{tc(String(formState.errors.types.message))}</p>
             )}
 
             {/* Conditional fields */}
@@ -404,7 +404,7 @@ const CreatePage = () => {
                       className="bg-background/60"
                     />
                     {formState.errors.name && (
-                      <p className="text-xs text-destructive">{formState.errors.name.message}</p>
+                      <p className="text-xs text-destructive">{tc(formState.errors.name.message ?? "Erreur inconnue")}</p>
                     )}
                   </div>
 
@@ -527,13 +527,14 @@ const CreatePage = () => {
             <div className="rounded-2xl glass shadow-float p-4 space-y-2">
               <div className="flex flex-wrap gap-1.5">
                 {types.map((t) => {
-                  const opt = TYPE_OPTIONS.find((o) => o.id === t)!;
+                  const opt = TYPE_OPTIONS.find((o) => o.id === t);
+                  if (!opt) return null;
                   return (
                     <span
                       key={t}
                       className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary"
                     >
-                      <opt.icon className="h-3 w-3" /> {opt.label}
+                      <opt.icon className="h-3 w-3" /> {tc(opt.label)}
                     </span>
                   );
                 })}
@@ -754,7 +755,7 @@ const CreatePage = () => {
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {progress < 100 ? `Création… ${progress}%` : tc("Redirection…")}
+                    {progress < 100 ? tc("Création… {{progress}}%", { progress }) : tc("Redirection…")}
                   </>
                 ) : (
                   <>

@@ -383,5 +383,35 @@
     "c2eae418a6ca8": "{{count}} min ago",
     "caebac0aa9a11": "{{count}} h ago",
     "c141e76eb1286": "{{count}} days ago"
+  },
+  "types": {
+    "produits": "Products",
+    "trust": "Trust",
+    "marque": "Brand",
+    "service": "Service"
+  },
+  "categories": {
+    "service": "Service",
+    "produit": "Product",
+    "aide": "Help",
+    "info": "Info",
+    "rencontre": "Meetup"
+  },
+  "validation": {
+    "minName": "At least 2 letters",
+    "maxName": "Maximum 30 characters",
+    "minChars": "At least 2 characters",
+    "max40": "Maximum 40 characters",
+    "max60": "Maximum 60 characters"
+  },
+  "creation": {
+    "validate": "Checking your details…",
+    "uuid": "Creating your unique code…",
+    "prepare": "Preparing your space…",
+    "persist": "Saving…",
+    "verify": "One last check…",
+    "done": "Your space is ready!",
+    "typeRequired": "Choose at least one space type",
+    "notConfirmed": "We couldn't confirm your space was saved"
   }
 }

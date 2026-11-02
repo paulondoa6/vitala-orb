@@ -123,7 +123,7 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
           placeholder={tc("Prénom Nom")}
           aria-invalid={!!errors.name}
         />
-        {errors.name && <p className="text-[11px] text-destructive">{errors.name}</p>}
+        {errors.name && <p className="text-[11px] text-destructive">{tc(errors.name)}</p>}
       </div>
 
       {/* Location */}
@@ -139,7 +139,7 @@ export const EditProfileForm = ({ onDone }: { onDone?: () => void }) => {
           placeholder={tc("Ville, Pays")}
           aria-invalid={!!errors.location}
         />
-        {errors.location && <p className="text-[11px] text-destructive">{errors.location}</p>}
+        {errors.location && <p className="text-[11px] text-destructive">{tc(errors.location)}</p>}
       </div>
 
       {/* Level */}

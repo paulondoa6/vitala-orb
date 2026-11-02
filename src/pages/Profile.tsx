@@ -148,10 +148,10 @@ const Profile = () => {
     {/* Stats */}
     <section className="mt-4 grid grid-cols-3 gap-3">
       {stats.map(({ label, value, icon: Icon }) => (
-        <div key={label} className="rounded-2xl glass shadow-float p-3 text-center">
+        <div key={tc(label)} className="rounded-2xl glass shadow-float p-3 text-center">
           <Icon className="mx-auto h-4 w-4 text-primary" />
-          <p className="mt-1 text-lg font-semibold leading-tight">{value}</p>
-          <p className="text-[11px] text-muted-foreground">{label}</p>
+          <p className="mt-1 text-lg font-semibold leading-tight">{tc(value)}</p>
+          <p className="text-[11px] text-muted-foreground">{tc(label)}</p>
         </div>
       ))}
     </section>
@@ -169,7 +169,7 @@ const Profile = () => {
       <div className="grid grid-cols-2 gap-2">
         {trustItems.map(({ icon: Icon, label, tone }) => (
           <div
-            key={label}
+            key={tc(label)}
             className="flex items-center gap-2 rounded-2xl glass shadow-float px-3 py-2.5"
           >
             <span
@@ -183,7 +183,7 @@ const Profile = () => {
             >
               <Icon className="h-4 w-4" />
             </span>
-            <span className="text-xs font-medium">{label}</span>
+            <span className="text-xs font-medium">{tc(label)}</span>
           </div>
         ))}
       </div>
@@ -279,10 +279,10 @@ const Profile = () => {
             { icon: MessageSquareQuote, label: tc("Réponse"), value: "< 1h" },
             { icon: Shield, label: tc("Litiges"), value: "0" },
           ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="rounded-xl bg-background/40 p-2 text-center">
+            <div key={tc(label)} className="rounded-xl bg-background/40 p-2 text-center">
               <Icon className="mx-auto h-3.5 w-3.5 text-primary" />
-              <p className="mt-1 text-xs font-semibold">{value}</p>
-              <p className="text-[10px] text-muted-foreground">{label}</p>
+              <p className="mt-1 text-xs font-semibold">{tc(value)}</p>
+              <p className="text-[10px] text-muted-foreground">{tc(label)}</p>
             </div>
           ))}
         </div>
@@ -305,9 +305,9 @@ const Profile = () => {
                       <p className="truncate text-sm font-semibold">{r.name}</p>
                       <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
                     </div>
-                    <p className="truncate text-[11px] text-muted-foreground">{r.role}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">{tc(r.role)}</p>
                   </div>
-                  <span className="shrink-0 text-[10px] text-muted-foreground">{r.date}</span>
+                  <span className="shrink-0 text-[10px] text-muted-foreground">{tc(r.date)}</span>
                 </div>
                 <div className="mt-1 flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
@@ -351,15 +351,15 @@ const Profile = () => {
       <div className="space-y-2">
         {settings.map(({ icon: Icon, label, hint }) => (
           <button
-            key={label}
+            key={tc(label)}
             className="glass shadow-float flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors hover:bg-accent/10"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Icon className="h-4 w-4" />
             </span>
             <span className="flex-1">
-              <span className="block text-sm font-medium">{label}</span>
-              <span className="block text-[11px] text-muted-foreground">{hint}</span>
+              <span className="block text-sm font-medium">{tc(label)}</span>
+              <span className="block text-[11px] text-muted-foreground">{tc(hint)}</span>
             </span>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </button>
