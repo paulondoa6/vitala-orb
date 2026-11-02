@@ -98,9 +98,9 @@ const ScanPage = () => {
                       : "bg-secondary/70 hover:bg-secondary",
                   )}
                 >
-                  <span className="block text-sm font-medium">{m.label}</span>
+                  <span className="block text-sm font-medium">{tc(m.label)}</span>
                   <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
-                    {m.hint}
+                    {tc(m.hint)}
                   </span>
                 </button>
               ))}
@@ -166,7 +166,7 @@ const ScanPage = () => {
                       : "bg-secondary text-muted-foreground",
                   )}
                 >
-                  {c.label}
+                  {tc(c.label)}
                 </button>
               ))}
             </div>
@@ -183,7 +183,7 @@ const ScanPage = () => {
 
       {error && (
         <div className="mt-5">
-          <ErrorState title={tc("Scan interrompu")} description={error} onRetry={() => start(config)} />
+          <ErrorState title={tc("Scan interrompu")} description={tc(error)} onRetry={() => start(config)} />
         </div>
       )}
 
@@ -196,7 +196,7 @@ const ScanPage = () => {
             aria-live="polite"
             className="mt-4 text-center text-sm font-medium text-muted-foreground"
           >
-            {step}
+            {tc(step, { distance: formatDistance(config.radiusM), count: results.length })}
           </p>
 
           <div className="mt-4 flex gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -213,7 +213,7 @@ const ScanPage = () => {
                     : "bg-secondary text-muted-foreground",
                 )}
               >
-                {b.label}
+                {tc(b.label)}
               </button>
             ))}
             {filters.size > 0 && (
@@ -229,7 +229,7 @@ const ScanPage = () => {
 
           {grouped.map((group) => (
             <div key={group.key}>
-              <SectionLabel label={group.label} trailing={`${group.items.length}`} />
+              <SectionLabel label={tc(group.label)} trailing={`${group.items.length}`} />
               <div className="mt-3 space-y-2.5">
                 {group.items.map((r) => (
                   <motion.div
@@ -247,9 +247,9 @@ const ScanPage = () => {
                       )}
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{r.title}</p>
+                        <p className="truncate text-sm font-medium">{r.title || tc("Espace sans nom")}</p>
                         <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                          {r.subtitle}
+                          {r.subtitle} · {tc({ flash: "{{count}} réponses", zone: "{{count}} flashs en direct", espace: "{{count}} services" }[r.kind], { count: r.count ?? 0 })}
                           {r.distanceM !== undefined && ` · ${formatDistance(r.distanceM)}`}
                         </p>
                       </div>

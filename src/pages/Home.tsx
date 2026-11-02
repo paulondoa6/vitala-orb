@@ -7,6 +7,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader, SectionLabel, Skeleton, ErrorState } from "@/components/layout/PageScaffold";
 import { useHomeScreen } from "@/modules/home/hooks";
 import type { HomeTileDTO } from "@/modules/home/api";
+import { timeAgo } from "@/core/geo";
 
 const TILE_COPY: Record<HomeTileDTO["key"], { icon: typeof Zap; title: string; line: string }> = {
   flash: { icon: Zap, title: "Flash", line: "Dis ce dont tu as besoin, maintenant." },
@@ -22,7 +23,7 @@ const Home = () => {
   return (
     <AppShell>
       <PageHeader
-        eyebrow={firstName ? `Salut ${firstName}` : tc("Bienvenue")}
+        eyebrow={firstName ? tc("Salut {{name}}", { name: firstName }) : tc("Bienvenue")}
         title={
           <>
             {tc("Tout se passe")} <span className="italic font-normal text-primary">{tc("ici")}</span>{tc(", autour de toi")}
@@ -45,8 +46,8 @@ const Home = () => {
               <History className="h-4 w-4 text-primary" strokeWidth={2.2} />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold tracking-tight">{data.resume.title}</span>
-              <span className="block truncate text-xs text-muted-foreground">{data.resume.detail}</span>
+              <span className="block text-sm font-semibold tracking-tight">{tc(data.resume.kind === "flash" ? "Ton flash est encore en ligne" : "Reprendre ton scan")}</span>
+              <span className="block truncate text-xs text-muted-foreground">{data.resume.kind === "flash" ? data.resume.detail : `${tc("{{count}} résultats", { count: data.resume.results })} · ${timeAgo(data.resume.at)}`}</span>
             </span>
             <ArrowRight className="h-4 w-4 shrink-0 text-primary" />
           </Link>
@@ -78,11 +79,11 @@ const Home = () => {
                         <copy.icon className="h-5 w-5 text-primary" strokeWidth={2.2} />
                       </span>
                       <div className="mt-4">
-                        <h2 className="text-base font-semibold tracking-tight">{copy.title}</h2>
-                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{copy.line}</p>
+                        <h2 className="text-base font-semibold tracking-tight">{tc(copy.title)}</h2>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{tc(copy.line)}</p>
                       </div>
                       <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                        {t.metric}
+                        {tc({ flash: "{{count}} en direct", zone: "{{count}} quartiers", scan: "en 10 s", espace: "{{count}} créés" }[t.key], { count: t.count })}
                         <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                       </span>
                     </Link>

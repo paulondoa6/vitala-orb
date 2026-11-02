@@ -2,7 +2,6 @@ import { countLiveFlashes, listLiveFlashes } from "@/modules/flash/api";
 import { listZonePulses } from "@/modules/zone/api";
 import { countBoites } from "@/modules/espace/api";
 import { getLastScan } from "@/modules/scan/lastScan";
-import { timeAgo } from "@/core/geo";
 
 /**
  * DTO de l'écran Home — contrat `home` :
@@ -13,12 +12,12 @@ import { timeAgo } from "@/core/geo";
 export interface HomeTileDTO {
   key: "flash" | "zone" | "scan" | "espace";
   to: string;
-  metric: string;
+  count: number;
 }
 
 export type HomeResumeDTO =
-  | { kind: "flash"; to: string; title: string; detail: string }
-  | { kind: "scan"; to: string; title: string; detail: string }
+  | { kind: "flash"; to: string; detail: string }
+  | { kind: "scan"; to: string; results: number; at: number }
   | null;
 
 export interface HomeScreenDTO {
@@ -45,24 +44,23 @@ export const getHomeScreen = async (viewerId: string): Promise<HomeScreenDTO> =>
     resume = {
       kind: "flash",
       to: `/flash/${myFlash.id}`,
-      title: "Ton flash est encore en ligne",
       detail: myFlash.text.length > 60 ? `${myFlash.text.slice(0, 60)}…` : myFlash.text,
     };
   } else if (lastScan) {
     resume = {
       kind: "scan",
       to: "/scan",
-      title: "Reprendre ton scan",
-      detail: `${lastScan.results} résultat${lastScan.results > 1 ? "s" : ""} · ${timeAgo(lastScan.at)}`,
+      results: lastScan.results,
+      at: lastScan.at,
     };
   }
 
   return {
     tiles: [
-      { key: "flash", to: "/flash", metric: `${live} en direct` },
-      { key: "zone", to: "/zone", metric: `${zones.length} quartiers` },
-      { key: "scan", to: "/scan", metric: "en 10 s" },
-      { key: "espace", to: "/espace", metric: `${espaces} créés` },
+      { key: "flash", to: "/flash", count: live },
+      { key: "zone", to: "/zone", count: zones.length },
+      { key: "scan", to: "/scan", count: 0 },
+      { key: "espace", to: "/espace", count: espaces },
     ],
     resume,
   };

@@ -7,6 +7,7 @@ import { useIdentity } from "@/core/identity";
 import { track } from "@/core/analytics";
 import { runScan, type ScanConfig, type ScanResult } from "./engine";
 import { saveLastScan } from "./lastScan";
+import { tc } from "@/core/copy";
 
 export type ScanPhase = "idle" | "scanning" | "done";
 
@@ -17,7 +18,7 @@ export interface ScanStep {
 
 const stepsFor = (config: ScanConfig): ScanStep[] => [
   { label: "Activation du radar", at: 8 },
-  { label: `Balayage sur ${config.radiusM >= 1000 ? `${config.radiusM / 1000} km` : `${config.radiusM} m`}`, at: 32 },
+  { label: "Balayage sur {{distance}}", at: 32 },
   { label: "Croisement des besoins en cours", at: 58 },
   { label: "Lecture du pouls des zones", at: 78 },
   { label: "Classement des résultats", at: 94 },
@@ -91,7 +92,7 @@ export const useScanRunner = () => {
             setStep(
               found.length === 0
                 ? "Rien trouvé dans ce périmètre"
-                : `${found.length} résultat${found.length > 1 ? "s" : ""} classés`,
+                : "{{count}} résultats classés",
             );
             setPhase("done");
             track({
@@ -113,7 +114,7 @@ export const useScanRunner = () => {
           mode: config.mode,
           reason: e instanceof Error ? e.message : "unknown",
         });
-        toast.error("Scan interrompu", { description: message });
+        toast.error(tc("Scan interrompu"), { description: tc(message) });
       }
     },
     [identity?.interests],
