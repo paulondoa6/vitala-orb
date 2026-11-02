@@ -1,10 +1,7 @@
 // Edge function: Vitalio assistant chat (streaming)
 // deno-lint-ignore-file
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { languageInstruction } from "./language.ts";
 
 const SYSTEM_PROMPT = `Tu es Vita, l'assistant officiel de l'application Vitalio.
 Vitalio est une PWA mobile-first (React + Vite + Tailwind) qui aide les utilisateurs à :
@@ -20,7 +17,7 @@ Tes missions :
 2. GUIDER la création d'un Espace : pose une question à la fois (type, nom, logo, lieu, services, membres) et résume la configuration avant de pointer vers /create.
 3. RECOMMANDER des Espaces ou services pertinents en t'appuyant sur le contexte fourni par l'utilisateur.
 
-Style : chaleureux, concis, en français, format markdown léger (listes, gras). Propose des liens cliquables vers les routes internes (ex : [Créer un Espace](/create), [Scanner](/scan)). Ne jamais inventer de données : si tu ne sais pas, dis-le et propose une action.`;
+Style : chaleureux, concis, dans la langue choisie, format markdown léger (listes, gras). Propose des liens cliquables vers les routes internes (ex : [Créer un Espace](/create), [Scanner](/scan)). Ne jamais inventer de données : si tu ne sais pas, dis-le et propose une action.`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -28,7 +25,14 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, language } = await req.json();
+    if (!Array.isArray(messages) || messages.length > 100 || messages.some((m) =>
+      !m || (m.role !== "user" && m.role !== "assistant") || typeof m.content !== "string" || m.content.length > 12000
+    ) || (language !== undefined && typeof language !== "string")) {
+      return new Response(JSON.stringify({ error: "Invalid chat request" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
@@ -43,7 +47,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: `${SYSTEM_PROMPT}\n\n${languageInstruction(language)}` },
             ...messages,
           ],
           stream: true,

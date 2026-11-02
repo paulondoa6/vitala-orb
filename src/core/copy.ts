@@ -331,5 +331,28 @@ export const copyKeys: Record<string, string> = {
   "il y a {{count}} h": "caebac0aa9a11",
   "il y a {{count}} j": "c141e76eb1286"
 };
-export const tc = (source: string, values: Record<string, string | number> = {}): string =>
-  i18n.t('copy.' + copyKeys[source], { ...values, defaultValue: source });
+const semanticKeys: Record<string, string> = {
+  "Au moins 2 lettres": "validation.minName",
+  "30 caractères maximum": "validation.maxName",
+  "Au moins 2 caractères": "validation.minChars",
+  "40 caractères max": "validation.max40",
+  "60 caractères max": "validation.max60",
+  "Service": "types.service",
+  "Produit": "categories.produit",
+  "Aide": "categories.aide",
+  "Info": "categories.info",
+  "Rencontre": "categories.rencontre",
+  "On vérifie tes infos…": "creation.validate",
+  "Création de ton code unique…": "creation.uuid",
+  "Préparation de ton espace…": "creation.prepare",
+  "Enregistrement…": "creation.persist",
+  "Dernière vérification…": "creation.verify",
+  "Ton espace est prêt !": "creation.done",
+  "Choisis au moins un type d'espace": "creation.typeRequired",
+  "L'enregistrement n'a pas pu être confirmé": "creation.notConfirmed",
+};
+
+export const tc = (source: string, values: Record<string, string | number> = {}): string => {
+  const key = semanticKeys[source] ?? (copyKeys[source] ? `copy.${copyKeys[source]}` : undefined);
+  return key ? i18n.t(key, { ...values, defaultValue: source }) : source;
+};

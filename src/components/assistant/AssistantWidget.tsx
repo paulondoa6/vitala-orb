@@ -6,6 +6,8 @@ import { X, Send, Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { normalizeLanguage } from "../../../supabase/functions/assistant-chat/language";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -15,11 +17,7 @@ const SUGGESTIONS = [
   "Recommande-moi un Espace",
 ];
 
-const WELCOME: Msg = {
-  role: "assistant",
-  content:
-    "Bonjour ! Je suis **Vita**, ton assistant Vitalio. Je peux t'expliquer l'app, t'aider à créer un Espace ou te recommander des contenus. Que veux-tu faire ?",
-};
+const WELCOME = "Bonjour ! Je suis **Vita**, ton assistant Vitalio. Je peux t'expliquer l'app, t'aider à créer un Espace ou te recommander des contenus. Que veux-tu faire ?";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/assistant-chat`;
 
@@ -33,17 +31,19 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 export const AssistantWidget = () => {
-  useTranslation();
+  const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const welcome: Msg = { role: "assistant", content: tc(WELCOME) };
+  const displayedMessages = [welcome, ...messages];
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  const lastAssistantText = messages.filter((m) => m.role === "assistant").pop()?.content ?? "";
+  const lastAssistantText = messages.filter((m) => m.role === "assistant").pop()?.content ?? welcome.content;
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -116,7 +116,7 @@ export const AssistantWidget = () => {
       assistantSoFar += chunk;
       setMessages((prev) => {
         const last = prev[prev.length - 1];
-        if (last?.role === "assistant" && last !== WELCOME && prev.length > next.length) {
+        if (last?.role === "assistant" && prev.length > next.length) {
           return prev.map((m, i) =>
             i === prev.length - 1 ? { ...m, content: assistantSoFar } : m,
           );
@@ -130,7 +130,8 @@ export const AssistantWidget = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: next.filter((m) => m !== WELCOME).map((m) => ({ role: m.role, content: m.content })),
+          messages: next.map((m) => ({ role: m.role, content: m.content })),
+          language: normalizeLanguage(i18n.resolvedLanguage ?? i18n.language),
         }),
       });
 
@@ -244,13 +245,13 @@ export const AssistantWidget = () => {
                   <p className="text-sm font-semibold">Vita</p>
                   <p className="text-[11px] text-muted-foreground">{tc("Assistant Vitalio · en ligne")}</p>
                 </div>
-                <button
+                <Button variant="ghost" size="icon"
                   onClick={() => setOpen(false)}
                   aria-label={tc("Fermer")}
                   className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted hover:bg-accent/20 transition-colors"
                 >
                   <X className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
 
               {/* Messages */}
@@ -260,7 +261,7 @@ export const AssistantWidget = () => {
                 aria-busy={loading}
                 className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
               >
-                {messages.map((m, i) => (
+                {displayedMessages.map((m, i) => (
                   <div
                     key={i}
                     className={cn(
@@ -311,17 +312,17 @@ export const AssistantWidget = () => {
                 )}
 
                 {/* Suggestions */}
-                {messages.length === 1 && !loading && (
+                {messages.length === 0 && !loading && (
                   <div className="flex flex-wrap gap-2 pt-2" role="list" aria-label={tc("Suggestions")}>
                     {SUGGESTIONS.map((s) => (
-                      <button
+                      <Button variant="outline" size="sm"
                         key={s}
                         role="listitem"
-                        onClick={() => send(s)}
+                        onClick={() => send(tc(s))}
                         className="rounded-full border border-border/60 bg-background/40 px-3 py-1.5 text-[11px] font-medium hover:bg-accent/10 transition-colors"
                       >
-                        {s}
-                      </button>
+                        {tc(s)}
+                      </Button>
                     ))}
                   </div>
                 )}
@@ -350,7 +351,7 @@ export const AssistantWidget = () => {
                     rows={1}
                     className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground max-h-32"
                   />
-                  <button
+                  <Button size="icon"
                     type="submit"
                     disabled={loading || !input.trim()}
                     aria-label={tc("Envoyer")}
@@ -361,7 +362,7 @@ export const AssistantWidget = () => {
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                  </button>
+                  </Button>
                 </div>
               </form>
             </motion.div>
